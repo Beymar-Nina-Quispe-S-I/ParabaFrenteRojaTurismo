@@ -41,17 +41,26 @@ const items = [
 
 export default function BottomNav({ current, onChange }) {
   return (
-    <div className="mobile-bottom-nav">
+    <nav className="mobile-bottom-nav">
+      {/* Fondo pill animado que se desliza */}
+      <span
+        className="nav-sliding-pill"
+        style={{
+          transform: `translateX(calc(${items.findIndex((i) => i.id === current)} * 100%))`,
+        }}
+      />
+
       {items.map((it) => (
         <button
           key={it.id}
           className={`mobile-nav-item ${current === it.id ? 'active' : ''}`}
           onClick={() => onChange(it.id)}
+          aria-label={it.label}
         >
           <span className="nav-icon-wrap">{it.icon}</span>
-          <span>{it.label}</span>
+          <span className="nav-label">{it.label}</span>
         </button>
       ))}
-    </div>
+    </nav>
   )
 }

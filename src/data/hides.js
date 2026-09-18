@@ -1,0 +1,155 @@
+// ============================================================
+// HIDES · puntos de observación de la Paraba Roja (Ara rubrogenys)
+// Coordenadas tal cual fueron proporcionadas por los guardaparques.
+// ============================================================
+
+export const HIDES_INICIALES = [
+  {
+    id: 'hide-1',
+    nombre: 'Hide 1',
+    descripcion: 'Punto de observación principal · Valle seco',
+    latitud: -18.099103,
+    longitud: -64.921034,
+    dms: `18°05'56.8"S 64°55'15.7"W`,
+    imagen:
+      'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=800&auto=format&fit=crop',
+    especie: 'Ara rubrogenys',
+    ciudad: 'Valle seco · Bolivia',
+    cantidad_avistada: null,
+    activo: true,
+  },
+  {
+    id: 'hide-2',
+    nombre: 'Hide 2',
+    descripcion: 'Punto de observación · Vegetación baja',
+    latitud: -18.101244,
+    longitud: -64.918622,
+    dms: `18°06'04.5"S 64°55'07.0"W`,
+    imagen:
+      'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&auto=format&fit=crop',
+    especie: 'Ara rubrogenys',
+    ciudad: 'Valle seco · Bolivia',
+    cantidad_avistada: null,
+    activo: true,
+  },
+  {
+    id: 'hide-3',
+    nombre: 'Hide 3',
+    descripcion: 'Punto de observación · Cerca de Hide 1',
+    latitud: -18.0991111,
+    longitud: -64.9210278,
+    dms: `18°06'18.8"S 64°54'57.7"W`,
+    imagen:
+      'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=800&auto=format&fit=crop',
+    especie: 'Ara rubrogenys',
+    ciudad: 'Valle seco · Bolivia',
+    cantidad_avistada: null,
+    activo: true,
+  },
+  {
+    id: 'hide-4',
+    nombre: 'Hide 4',
+    descripcion: 'Punto de observación · Zona alta',
+    latitud: -18.1328889,
+    longitud: -64.8319722,
+    dms: `18°07'58.4"S 64°49'55.1"W`,
+    imagen:
+      'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&auto=format&fit=crop',
+    especie: 'Ara rubrogenys',
+    ciudad: 'Valle seco · Bolivia',
+    cantidad_avistada: null,
+    activo: true,
+  },
+  {
+    id: 'hide-5',
+    nombre: 'Hide 5',
+    descripcion: 'Punto de observación · Quebrada',
+    latitud: -18.1293889,
+    longitud: -64.8233333,
+    dms: `18°07'45.8"S 64°49'24.0"W`,
+    imagen:
+      'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=800&auto=format&fit=crop',
+    especie: 'Ara rubrogenys',
+    ciudad: 'Valle seco · Bolivia',
+    cantidad_avistada: null,
+    activo: true,
+  },
+]
+
+// ============================================================
+// TRAMOS entre hides (ruta progresiva)
+// Orden: Hide 1 → Hide 2 → Hide 3 → Hide 4 → Hide 5
+//
+// estado:
+//   'ok'      → verde transparente (paso habilitado)
+//   'barro'   → amarillo (barro o charcos)
+//   'bloqueado' → rojo (no transitable)
+// ============================================================
+
+export const ESTADOS_RUTA = {
+  ok: {
+    color: '#22c55e',       // verde
+    colorHex: 'rgba(34, 197, 94, 0.55)',
+    label: 'Transitable',
+    icono: '✓',
+  },
+  barro: {
+    color: '#f59e0b',       // amarillo/ámbar
+    colorHex: 'rgba(245, 158, 11, 0.6)',
+    label: 'Con barro / charcos',
+    icono: '⚠',
+  },
+  bloqueado: {
+    color: '#ef4444',       // rojo
+    colorHex: 'rgba(239, 68, 68, 0.65)',
+    label: 'Bloqueado',
+    icono: '✕',
+  },
+}
+
+export const TRAMOS_RUTA = [
+  {
+    id: 'tramo-1-2',
+    desde: 'hide-1',
+    hasta: 'hide-2',
+    nombre: 'Hide 1 → Hide 2',
+    estado: 'ok', // 🟢
+  },
+  {
+    id: 'tramo-2-3',
+    desde: 'hide-2',
+    hasta: 'hide-3',
+    nombre: 'Hide 2 → Hide 3',
+    estado: 'barro', // 🟡
+  },
+  {
+    id: 'tramo-3-4',
+    desde: 'hide-3',
+    hasta: 'hide-4',
+    nombre: 'Hide 3 → Hide 4',
+    estado: 'bloqueado', // 🔴
+  },
+  {
+    id: 'tramo-4-5',
+    desde: 'hide-4',
+    hasta: 'hide-5',
+    nombre: 'Hide 4 → Hide 5',
+    estado: 'ok', // 🟢
+  },
+]
+
+// Helper: obtiene las coordenadas de un hide por id
+export function getHideById(id) {
+  return HIDES_INICIALES.find((h) => h.id === id)
+}
+
+// Helper: devuelve la lista de puntos en orden del recorrido
+export function getRutaProgresiva() {
+  return [
+    HIDES_INICIALES[0], // Hide 1
+    HIDES_INICIALES[1], // Hide 2
+    HIDES_INICIALES[2], // Hide 3
+    HIDES_INICIALES[3], // Hide 4
+    HIDES_INICIALES[4], // Hide 5
+  ]
+}

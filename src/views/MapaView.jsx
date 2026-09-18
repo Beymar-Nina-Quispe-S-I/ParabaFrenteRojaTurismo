@@ -1,72 +1,179 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import MapView from '../components/MapView'
+import HideDetailModal from '../components/HideDetailModal'
 import { sb } from '../lib/supabase'
+import { HIDES_INICIALES, TRAMOS_RUTA } from '../data/hides'
+import { haversineKm } from '../lib/geo'
+import L from 'leaflet'
 
 export default function MapaView() {
-  const [ubicaciones, setUbicaciones] = useState([])
+  const [ubicaciones, setUbicaciones] = useState(HIDES_INICIALES)
   const [userPosition, setUserPosition] = useState(null)
-  const [center, setCenter] = useState([-17.7833, -63.1667])
-  const [zoom, setZoom] = useState(7)
+  const [center, setCenter] = useState([-18.11, -64.88])
+  const [zoom, setZoom] = useState(11)
   const [route, setRoute] = useState(null)
   const [routeInfo, setRouteInfo] = useState(null)
   const [mapHeaderLabel, setMapHeaderLabel] = useState('Mapa')
 
+  const [selectedHide, setSelectedHide] = useState(null)
+
+  // Guardamos la instancia del mapa para volar a los hides
+  const mapRef = useRef(null)
+
+  // ----------------------------------------------------------
+  // Cargar ubicaciones adicionales
+  // ----------------------------------------------------------
   useEffect(() => {
     async function cargar() {
-      const { data } = await sb
-        .from('ubicaciones')
-        .select('*')
-        .eq('activo', true)
-        .order('fecha_avistamiento', { ascending: false })
-      setUbicaciones(data || [])
+      try {
+        const { data, error } = await sb
+          .from('ubicaciones')
+          .select('*')
+          .eq('activo', true)
+          .order('fecha_avistamiento', { ascending: false })
+
+        if (error || !Array.isArray(data) || data.length === 0) return
+
+        const extra = data.filter(
+          (u) =>
+            !HIDES_INICIALES.some(
+              (h) =>
+                Math.abs(h.latitud - u.latitud) < 0.00001 &&
+                Math.abs(h.longitud - u.longitud) < 0.00001
+            )
+        )
+        setUbicaciones([...HIDES_INICIALES, ...extra])
+      } catch {
+        /* silencioso */
+      }
     }
     cargar()
   }, [])
 
+  // ----------------------------------------------------------
+  // Pedir ubicación
+  // ----------------------------------------------------------
   const pedirUbicacion = useCallback(() => {
-    if (!navigator.geolocation) return
+    if (!navigator.geolocation) {
+      alert('Geolocalización no disponible')
+      return
+    }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const lat = pos.coords.latitude
         const lng = pos.coords.longitude
         setUserPosition({ lat, lng })
-        setCenter([lat, lng])
-        setZoom(15)
+        if (mapRef.current) {
+          mapRef.current.flyTo([lat, lng], 15, { duration: 1.2 })
+        } else {
+          setCenter([lat, lng])
+          setZoom(15)
+        }
       },
       () => alert('No se pudo acceder a la ubicación'),
       { enableHighAccuracy: true, timeout: 10000 }
     )
   }, [])
 
-  function verPuntos() {
-    if (!ubicaciones.length) {
-      alert('Aún no hay avistamientos con ubicación en el mapa')
-      return
+  // ----------------------------------------------------------
+  // 🗺️ Ver mapa guía → acercar a los hides
+  // ----------------------------------------------------------
+  function verMapaGuia() {
+    const lista = ubicaciones.length ? ubicaciones : HIDES_INICIALES
+    if (!lista.length) return
+
+    if (mapRef.current) {
+      const coords = lista.map((u) => [u.latitud, u.longitud])
+      if (coords.length === 1) {
+        mapRef.current.flyTo(coords[0], 14, { duration: 1.4 })
+      } else {
+        const bounds = L.latLngBounds(coords)
+        mapRef.current.flyToBounds(bounds.pad(0.18), {
+          duration: 1.4,
+          maxZoom: 14,
+        })
+      }
+    } else {
+      // fallback
+      const lats = lista.map((u) => u.latitud)
+      const lngs = lista.map((u) => u.longitud)
+      setCenter([
+        (Math.min(...lats) + Math.max(...lats)) / 2,
+        (Math.min(...lngs) + Math.max(...lngs)) / 2,
+      ])
+      setZoom(13)
     }
-    const lats = ubicaciones.map((u) => u.latitud)
-    const lngs = ubicaciones.map((u) => u.longitud)
-    setCenter([
-      (Math.min(...lats) + Math.max(...lats)) / 2,
-      (Math.min(...lngs) + Math.max(...lngs)) / 2,
-    ])
-    setZoom(9)
   }
 
-  function trazarDesdePopup(lat, lng, nombre) {
-    const origen = userPosition || { lat: -17.7833, lng: -63.1667 }
+  // ----------------------------------------------------------
+  // Trazar ruta
+  // ----------------------------------------------------------
+  function trazarRuta(lat, lng, nombre, modo = 'vehiculo') {
+    const origen = userPosition || { lat: -18.11, lng: -64.88 }
     setRoute({
       from: [origen.lat, origen.lng],
       to: [lat, lng],
+      modo,
     })
-    setMapHeaderLabel('Ruta activa')
-    setRouteInfo({ nombre, km: '...', min: '...' })
+    setMapHeaderLabel(modo === 'caminar' ? 'Ruta a pie' : 'Ruta activa')
+    setRouteInfo({ nombre, km: '...', min: '...', modo })
   }
 
-  // Exponer trazarRuta para RutasView
-  useEffect(() => {
-    window.__trazarRuta = (lat, lng, nombre) => {
-      trazarDesdePopup(lat, lng, nombre)
+  function handleHideClick(hide) {
+    setSelectedHide(hide)
+  }
+
+  function handleIrDirecto(hide) {
+    trazarRuta(hide.latitud, hide.longitud, hide.nombre, 'vehiculo')
+    if (mapRef.current) {
+      mapRef.current.flyTo([hide.latitud, hide.longitud], 15, {
+        duration: 1,
+      })
+    } else {
+      setCenter([hide.latitud, hide.longitud])
+      setZoom(15)
     }
+  }
+
+  function handleIrVehiculo() {
+    if (!selectedHide) return
+    trazarRuta(
+      selectedHide.latitud,
+      selectedHide.longitud,
+      selectedHide.nombre,
+      'vehiculo'
+    )
+    if (mapRef.current) {
+      mapRef.current.flyTo(
+        [selectedHide.latitud, selectedHide.longitud],
+        15,
+        { duration: 1 }
+      )
+    }
+    setSelectedHide(null)
+  }
+
+  function handleIrCaminar() {
+    if (!selectedHide) return
+    trazarRuta(
+      selectedHide.latitud,
+      selectedHide.longitud,
+      selectedHide.nombre,
+      'caminar'
+    )
+    if (mapRef.current) {
+      mapRef.current.flyTo(
+        [selectedHide.latitud, selectedHide.longitud],
+        15,
+        { duration: 1 }
+      )
+    }
+    setSelectedHide(null)
+  }
+
+  useEffect(() => {
+    window.__trazarRuta = (lat, lng, nombre) =>
+      trazarRuta(lat, lng, nombre, 'vehiculo')
     return () => {
       delete window.__trazarRuta
     }
@@ -77,6 +184,23 @@ export default function MapaView() {
     setRoute(null)
     setRouteInfo(null)
     setMapHeaderLabel('Mapa')
+  }
+
+  let distanciaSeleccionada = null
+  let estadoSeleccionado = 'ok'
+
+  if (selectedHide && userPosition) {
+    distanciaSeleccionada = haversineKm(
+      userPosition.lat,
+      userPosition.lng,
+      selectedHide.latitud,
+      selectedHide.longitud
+    )
+  }
+
+  if (selectedHide) {
+    const tramo = TRAMOS_RUTA.find((t) => t.hasta === selectedHide.id)
+    if (tramo) estadoSeleccionado = tramo.estado
   }
 
   return (
@@ -97,57 +221,127 @@ export default function MapaView() {
               setRoute(null)
               setRouteInfo(null)
             }}
-            onTraceFromPopup={trazarDesdePopup}
+            onHideClick={handleHideClick}
+            onIrDirecto={handleIrDirecto}
+            onMapReady={(map) => {
+              mapRef.current = map
+            }}
           />
         </div>
       </div>
 
+      {/* Header */}
       <div
         className="mobile-header map-header"
         style={{ position: 'fixed', zIndex: 100 }}
       >
         <div className="mobile-header-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
             <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
           </svg>
           <span>{mapHeaderLabel}</span>
         </div>
       </div>
 
+      {/* Ruta activa */}
       <div className={`route-info-card ${routeInfo ? 'active' : ''}`}>
         <div className="route-info-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            {routeInfo?.modo === 'caminar' ? (
+              <path d="M13 4a1 1 0 100-2 1 1 0 000 2zM9.5 8.5L7 21m6-17.5L10.5 12 13 13.5l1.5 6M7 10.5l2.5-2L12 9l2.5-1 2 2" />
+            ) : (
+              <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+            )}
           </svg>
         </div>
         <div className="route-info-body">
           <strong>{routeInfo?.nombre || '—'}</strong>
           <span>
-            {routeInfo ? `${routeInfo.km} km · aprox. ${routeInfo.min} min` : '—'}
+            {routeInfo && routeInfo.km !== '...'
+              ? `${routeInfo.km} km · aprox. ${routeInfo.min} min · ${
+                  routeInfo.modo === 'caminar' ? 'a pie' : 'en vehículo'
+                }`
+              : 'Calculando…'}
           </span>
         </div>
-        <button className="route-info-close" onClick={cerrarRuta}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <button
+          className="route-info-close"
+          onClick={cerrarRuta}
+          aria-label="Cerrar ruta"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
             <path d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
 
+      {/* Leyenda */}
+      <div className="ruta-leyenda">
+        <div className="ruta-leyenda-item">
+          <span className="ruta-leyenda-dot ok" />
+          <span>Transitable</span>
+        </div>
+        <div className="ruta-leyenda-item">
+          <span className="ruta-leyenda-dot barro" />
+          <span>Barro / charcos</span>
+        </div>
+        <div className="ruta-leyenda-item">
+          <span className="ruta-leyenda-dot bloqueado" />
+          <span>Bloqueado</span>
+        </div>
+      </div>
+
+      {/* Controles */}
       <div className="map-controls">
         <button className="map-control-btn primary" onClick={pedirUbicacion}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
             <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
           Mi ubicación
         </button>
-        <button className="map-control-btn secondary" onClick={verPuntos}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3M3 16v3a2 2 0 002 2h3m11-5v3a2 2 0 01-2 2h-3" />
+        <button className="map-control-btn secondary" onClick={verMapaGuia}>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
           </svg>
-          Ver puntos
+          Ver mapa guía
         </button>
       </div>
+
+      {/* Modal grande */}
+      <HideDetailModal
+        hide={selectedHide}
+        estadoTramo={estadoSeleccionado}
+        distanciaKm={distanciaSeleccionada}
+        onClose={() => setSelectedHide(null)}
+        onIr={handleIrVehiculo}
+        onCaminar={handleIrCaminar}
+      />
     </div>
   )
 }

@@ -1705,25 +1705,56 @@ a,
 }
 
 /* ---- Bottom nav: barra flotante tipo cápsula ---- */
+/* ==========================================================
+   BOTTOM NAV MÓVIL — blanca, pegada al fondo, estilo moderno
+   ========================================================== */
+
 .mobile-bottom-nav {
   position: fixed;
-  left: 14px;
-  right: 14px;
-  bottom: calc(14px + var(--safe-bottom));
-  background: rgba(27, 27, 47, 0.97);
-  backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--r-pill);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff;
+  border-top: 1px solid #ece9e2;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  align-items: center;
+  align-items: stretch;
   z-index: 1000;
-  box-shadow: 0 16px 34px rgba(27, 27, 47, 0.32);
-  padding: 8px 8px;
+  padding: 6px 4px calc(6px + var(--safe-bottom));
+  box-shadow: 0 -8px 24px rgba(27, 27, 47, 0.06);
   will-change: transform;
+  overflow: hidden;
 }
 
+/* Pill que se desliza entre los items */
+.nav-sliding-pill {
+  position: absolute;
+  top: 8px;
+  left: 4px;
+  width: calc((100% - 8px) / 4);
+  height: 42px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(214, 72, 63, 0.14), rgba(214, 72, 63, 0.06));
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Cuando el item activo es el de Rutas, cambia a ocre */
+.mobile-bottom-nav:has(.mobile-nav-item:nth-child(5).active) .nav-sliding-pill {
+  background: linear-gradient(135deg, rgba(198, 134, 46, 0.16), rgba(198, 134, 46, 0.06));
+}
+
+/* Fallback para navegadores sin :has() */
+.mobile-nav-item.rutas-active~.nav-sliding-pill,
+.mobile-nav-item[data-view="rutas"].active~.nav-sliding-pill {
+  background: linear-gradient(135deg, rgba(198, 134, 46, 0.16), rgba(198, 134, 46, 0.06));
+}
+
+/* ---- Items ---- */
 .mobile-nav-item {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1731,58 +1762,110 @@ a,
   gap: 2px;
   cursor: pointer;
   color: #8f8da6;
-  transition: color 0.25s var(--ease-out);
-  padding: 4px 0 5px;
-  position: relative;
-  min-height: 52px;
-  border: none;
   background: transparent;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  padding: 6px 0 4px;
+  min-height: 56px;
+  transition: color 0.25s ease, transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-tap-highlight-color: transparent;
 }
 
+/* Hover suave en desktop táctil / hover */
+.mobile-nav-item:not(.active):hover {
+  color: #4a4a63;
+}
+
+.mobile-nav-item:not(.active):hover .nav-icon-wrap {
+  background: #f4f3ef;
+}
+
+/* Toque: contrae un poco */
+.mobile-nav-item:active {
+  transform: scale(0.94);
+}
+
+/* ---- Ícono ---- */
 .nav-icon-wrap {
-  width: 42px;
-  height: 28px;
-  border-radius: 14px;
+  width: 44px;
+  height: 34px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s var(--ease-spring), transform 0.25s var(--ease-spring), box-shadow 0.3s var(--ease-out);
+  transition: background 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
 }
 
 .mobile-nav-item svg {
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
   display: block;
-  transition: transform 0.2s var(--ease-spring);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.mobile-nav-item span {
+/* ---- Label ---- */
+.nav-label {
   font-family: 'Sora', sans-serif;
   font-size: 9.5px;
   font-weight: 700;
   letter-spacing: 0.15px;
   line-height: 1.2;
-  margin-top: 3px;
-  opacity: 0.9;
+  margin-top: 2px;
+  opacity: 0.85;
+  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* ---- Estado activo ---- */
 .mobile-nav-item.active {
-  color: #ffffff;
+  color: #ff1100;
 }
 
 .mobile-nav-item.active .nav-icon-wrap {
-  background: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(214, 72, 63, 0.45);
+  /* El fondo lo pinta el pill deslizante detrás, aquí solo animamos el icono */
+  transform: translateY(-1px);
 }
 
-.mobile-nav-item:nth-child(4).active .nav-icon-wrap {
-  background: var(--route);
-  box-shadow: 0 8px 16px rgba(198, 134, 46, 0.45);
+.mobile-nav-item.active svg {
+  transform: scale(1.08);
 }
 
-.mobile-nav-item:active .nav-icon-wrap {
-  transform: scale(0.88);
+.mobile-nav-item.active .nav-label {
+  opacity: 1;
+  font-weight: 800;
+}
+
+/* Ítem 4 (Rutas) usa ocre cuando está activo */
+.mobile-nav-item:nth-child(5).active {
+  color: #ff0000;
+}
+
+/* ==========================================================
+   Ajustes relacionados con la nueva altura de la barra
+   ========================================================== */
+
+/* Ya no necesitas tanto padding inferior */
+#mobileApp {
+  padding-bottom: calc(78px + var(--safe-bottom));
+}
+
+/* Botones del mapa: súbelos un poco */
+.map-controls {
+  bottom: calc(88px + var(--safe-bottom));
+}
+
+/* Route info card: alinéala con el espacio libre */
+.route-info-card {
+  bottom: calc(150px + var(--safe-bottom));
+}
+
+
+/* Skeleton / cards en el mapa: mismo criterio */
+.mobile-avistamiento-item,
+.ruta-item {
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ---- Carousel ---- */
@@ -2604,4 +2687,810 @@ a,
   height: 1px;
   background: var(--border);
   margin: 8px 4px;
+}
+
+
+
+
+/* ==========================================================
+   TRAMOS DE RUTA — colores por estado
+   ========================================================== */
+
+/* Tooltip sobre las líneas del mapa */
+.tramo-tooltip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  min-width: 140px;
+}
+
+.tramo-tooltip-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.tramo-tooltip strong {
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 1px;
+}
+
+.tramo-tooltip small {
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+
+/* Variante por estado */
+.tramo-tooltip.tramo-ok .tramo-tooltip-icon {
+  background: #22c55e;
+}
+
+.tramo-tooltip.tramo-ok strong {
+  color: #15803d;
+}
+
+.tramo-tooltip.tramo-barro .tramo-tooltip-icon {
+  background: #f59e0b;
+}
+
+.tramo-tooltip.tramo-barro strong {
+  color: #b45309;
+}
+
+.tramo-tooltip.tramo-bloqueado .tramo-tooltip-icon {
+  background: #ef4444;
+}
+
+.tramo-tooltip.tramo-bloqueado strong {
+  color: #b91c1c;
+}
+
+/* ---- Leyenda flotante en el mapa ---- */
+.ruta-leyenda {
+  position: absolute;
+  bottom: 100px;
+  left: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  border: 1px solid #e7e5de;
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 8px 24px rgba(27, 27, 47, 0.12);
+  z-index: 500;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  pointer-events: none;
+}
+
+.ruta-leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4a4a63;
+  font-weight: 600;
+}
+
+.ruta-leyenda-dot {
+  width: 18px;
+  height: 4px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.ruta-leyenda-dot.ok {
+  background: #22c55e;
+}
+
+.ruta-leyenda-dot.barro {
+  background: #f59e0b;
+}
+
+.ruta-leyenda-dot.bloqueado {
+  background: linear-gradient(90deg, #ef4444 0 60%, transparent 60% 100%);
+  background-size: 6px 100%;
+}
+
+@media (min-width: 1024px) {
+  .ruta-leyenda {
+    bottom: 90px;
+    left: 24px;
+    padding: 12px 16px;
+    font-size: 0.78rem;
+  }
+}
+
+
+
+
+
+
+/* ==========================================================
+   LISTA DE TRAMOS — vista Rutas
+   ========================================================== */
+
+.tramos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tramo-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 14px 22px;
+  border-radius: 14px;
+  background: #f9f8f6;
+  overflow: hidden;
+  transition: transform 0.15s var(--ease-spring);
+}
+
+.tramo-item:active {
+  transform: scale(0.98);
+}
+
+/* Barra lateral del color del estado */
+.tramo-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: #22c55e;
+}
+
+.tramo-item.tramo-barro::before {
+  background: #f59e0b;
+}
+
+.tramo-item.tramo-bloqueado::before {
+  background: #ef4444;
+}
+
+/* Puntito de color + nombre */
+.tramo-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tramo-nombre {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1b1b2f;
+}
+
+.tramo-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #d6483f;
+  color: #fff;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tramo-estado {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: #6b6a66;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.tramo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+}
+
+.tramo-item.tramo-barro .tramo-dot {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+}
+
+.tramo-item.tramo-bloqueado .tramo-dot {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+}
+
+/* Reutiliza el botón .btn-ruta-trazar existente */
+.tramo-item .btn-ruta-trazar {
+  padding: 8px 12px;
+  font-size: 0.72rem;
+}
+
+.tramo-item .btn-ruta-trazar svg {
+  width: 12px;
+  height: 12px;
+}
+
+
+.hide-marker {
+  position: relative !important;
+  width: 56px !important;
+  height: 78px !important;
+  background: red !important;
+  border-radius: 50% !important;
+  z-index: 9999 !important;
+}
+
+
+
+
+
+
+
+
+
+
+/* ==========================================================
+   PIN DE HIDE
+   ========================================================== */
+.hide-pin {
+  position: relative;
+  width: 46px;
+  height: 66px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hide-pin:hover {
+  transform: translateY(-3px) scale(1.06);
+}
+
+.hide-pin-head {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #ffffff;
+  box-shadow: 0 6px 16px rgba(27, 27, 47, 0.28),
+    0 0 0 2px rgba(255, 255, 255, 0.6);
+  position: relative;
+  z-index: 2;
+}
+
+.hide-pin-head svg {
+  width: 20px;
+  height: 20px;
+}
+
+.hide-pin-tip {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 12px solid #22c55e;
+  margin-top: -3px;
+  filter: drop-shadow(0 3px 4px rgba(27, 27, 47, 0.3));
+  z-index: 1;
+}
+
+.hide-pin-label {
+  position: absolute;
+  bottom: -2px;
+  background: #1b1b2f;
+  color: #fff;
+  font-family: 'Sora', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(27, 27, 47, 0.3);
+  letter-spacing: 0.2px;
+  transform: translateY(50%);
+}
+
+/* ==========================================================
+   MODAL DE HIDE
+   ========================================================== */
+.hide-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(27, 27, 47, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: hideModalFadeIn 0.25s ease-out;
+}
+
+@keyframes hideModalFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.hide-modal {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 92vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 30px 60px rgba(27, 27, 47, 0.35);
+  animation: hideModalPopIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes hideModalPopIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.hide-modal-photo {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+  background-color: #1b1b2f;
+  flex-shrink: 0;
+}
+
+.hide-modal-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+      rgba(27, 27, 47, 0.55) 0%,
+      rgba(27, 27, 47, 0.05) 40%,
+      transparent 100%);
+  pointer-events: none;
+}
+
+.hide-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  border: none;
+  color: #1b1b2f;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hide-modal-close:active {
+  transform: scale(0.94);
+}
+
+.hide-modal-close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.hide-modal-estado {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #1b1b2f;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  z-index: 3;
+}
+
+.hide-modal-estado-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+}
+
+.hide-modal-estado.estado-barro .hide-modal-estado-dot {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+}
+
+.hide-modal-estado.estado-bloqueado .hide-modal-estado-dot {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+}
+
+.hide-modal-body {
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.hide-modal-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1b1b2f;
+  margin: 0 0 4px;
+  letter-spacing: -0.015em;
+}
+
+.hide-modal-sub {
+  font-size: 0.85rem;
+  color: #6b6a66;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.hide-modal-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.hide-modal-stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #f9f8f6;
+  border-radius: 14px;
+  border: 1px solid #f1efe9;
+}
+
+.hide-modal-stat svg {
+  width: 22px;
+  height: 22px;
+  color: #d6483f;
+  flex-shrink: 0;
+}
+
+.hide-modal-stat-label {
+  display: block;
+  font-size: 0.68rem;
+  color: #8f8da6;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 2px;
+}
+
+.hide-modal-stat-value {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #1b1b2f;
+  display: block;
+}
+
+.hide-modal-coords {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 14px;
+  background: #eff6f7;
+  border: 1px solid #d7e6e8;
+  border-radius: 12px;
+  color: #326e7a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.hide-modal-coords svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.hide-modal-btn {
+  width: 100%;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, #d6483f, #b23830);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 10px 24px rgba(214, 72, 63, 0.32);
+  margin-top: 4px;
+}
+
+.hide-modal-btn:active {
+  transform: scale(0.97);
+}
+
+.hide-modal-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 400px) {
+  .hide-modal-photo {
+    height: 180px;
+  }
+
+  .hide-modal-title {
+    font-size: 1.1rem;
+  }
+
+  .hide-modal-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+
+/* ==========================================================
+   POPUP CHIQUITO DEL HIDE
+   ========================================================== */
+
+.hide-popup-mini .leaflet-popup-content-wrapper {
+  border-radius: 16px !important;
+  box-shadow: 0 12px 32px rgba(27, 27, 47, 0.22) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.hide-popup-mini .leaflet-popup-content {
+  margin: 0 !important;
+  font-family: 'Inter', sans-serif;
+  min-width: 200px;
+}
+
+.hide-popup-mini .leaflet-popup-tip {
+  box-shadow: 0 4px 8px rgba(27, 27, 47, 0.15);
+}
+
+.hide-popup-body {
+  padding: 14px 16px 12px;
+}
+
+.hide-popup-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1b1b2f;
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+
+.hide-popup-sub {
+  font-size: 0.75rem;
+  color: #8f8da6;
+  margin: 0 0 10px;
+  line-height: 1.35;
+}
+
+.hide-popup-dist {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: #f4f3ef;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  color: #4a4a63;
+  margin-bottom: 10px;
+}
+
+.hide-popup-dist svg {
+  width: 14px;
+  height: 14px;
+  color: #d6483f;
+  flex-shrink: 0;
+}
+
+.hide-popup-dist strong {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  color: #1b1b2f;
+  font-size: 0.82rem;
+}
+
+.hide-popup-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.hide-popup-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.2s ease;
+}
+
+.hide-popup-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+.hide-popup-btn.info {
+  background: #f4f3ef;
+  color: #1b1b2f;
+}
+
+.hide-popup-btn.info:hover {
+  background: #ebe9e2;
+}
+
+.hide-popup-btn.ir {
+  background: linear-gradient(135deg, #d6483f, #b23830);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(214, 72, 63, 0.32);
+}
+
+.hide-popup-btn.ir:hover {
+  box-shadow: 0 6px 14px rgba(214, 72, 63, 0.45);
+}
+
+.hide-popup-btn:active {
+  transform: scale(0.95);
+}
+
+/* Cerrar el popup con estilo rojo */
+.hide-popup-mini .leaflet-popup-close-button {
+  color: #8f8da6 !important;
+  font-size: 20px !important;
+  padding: 6px 8px 0 0 !important;
+  transition: color 0.2s;
+}
+
+.hide-popup-mini .leaflet-popup-close-button:hover {
+  color: #d6483f !important;
+}
+
+/* ==========================================================
+   MODAL GRANDE — botones de acción
+   ========================================================== */
+
+.hide-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.hide-modal-btn {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.hide-modal-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.hide-modal-btn.ir {
+  background: linear-gradient(135deg, #d6483f, #b23830);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(214, 72, 63, 0.32);
+}
+
+.hide-modal-btn.ir:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(214, 72, 63, 0.42);
+}
+
+.hide-modal-btn.caminar {
+  background: #eef4f5;
+  color: #326e7a;
+  border: 1.5px solid #d7e6e8;
+  box-shadow: 0 6px 14px rgba(50, 110, 122, 0.12);
+}
+
+.hide-modal-btn.caminar:hover {
+  background: #e0edee;
+  transform: translateY(-1px);
+}
+
+.hide-modal-btn:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 400px) {
+  .hide-modal-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================
+   LÍNEAS DE TRAMO — más parecidas a caminos
+   ========================================================== */
+.leaflet-interactive {
+  transition: stroke-opacity 0.25s ease;
+}
+
+/* Tooltip sobre la línea */
+.leaflet-tooltip.tramo-tooltip-wrapper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
