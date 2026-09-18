@@ -53,7 +53,7 @@ function iconoHide(nombre, estadoTramo = 'ok') {
 function generarCurva(desde, hasta, tramoId = '') {
   const [lat1, lng1] = desde
   const [lat2, lng2] = hasta
-  const pasos = 24 // más puntos = curva más suave
+  const pasos = 24
 
   const dx = lng2 - lng1
   const dy = lat2 - lat1
@@ -61,29 +61,23 @@ function generarCurva(desde, hasta, tramoId = '') {
   const perpX = -dy / len
   const perpY = dx / len
 
-  // Semilla por tramo para que cada uno tenga forma única
   const seed = tramoId.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
-  const seedA = ((seed % 7) - 3) / 10 // -0.3 a 0.3
-  const seedB = (((seed * 3) % 5) - 2) / 15
+  const seedA = ((seed % 7) - 3) / 10
 
   const curva = []
 
   for (let i = 0; i <= pasos; i++) {
     const t = i / pasos
 
-    // Interpolación base (línea recta)
     const baseLat = lat1 + (lat2 - lat1) * t
     const baseLng = lng1 + (lng2 - lng1) * t
 
-    // Curva doble senoidal (más orgánica)
-    const curva1 = Math.sin(t * Math.PI) // pico al centro
-    const curva2 = Math.sin(t * Math.PI * 2) * 0.3 // ondulación extra
+    const curva1 = Math.sin(t * Math.PI)
+    const curva2 = Math.sin(t * Math.PI * 2) * 0.3
 
-    // Amplitud de la desviación
     const amplitud = (0.15 + Math.abs(seedA) * 0.1) * len
     const offset = (curva1 * 0.85 + curva2) * amplitud
 
-    // Aplicar desviación perpendicular + ligera variación con la semilla
     const noise = Math.sin(t * 8 + seed) * len * 0.005
 
     curva.push([
@@ -134,6 +128,14 @@ function ResizeObserverLeaflet() {
     ro.observe(container)
     return () => ro.disconnect()
   }, [map])
+  return null
+}
+
+function MapInstanceHandler({ onReady }) {
+  const map = useMap()
+  useEffect(() => {
+    if (onReady) onReady(map)
+  }, [map, onReady])
   return null
 }
 
@@ -334,15 +336,4 @@ export default function MapView({
       )}
     </MapContainer>
   )
-}
-
-// ------------------------------------------------------------
-// Comparte la instancia del mapa con el padre
-// ------------------------------------------------------------
-function MapInstanceHandler({ onReady }) {
-  const map = useMap()
-  useEffect(() => {
-    if (onReady) onReady(map)
-  }, [map, onReady])
-  return null
 }

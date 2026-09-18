@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet-routing-machine'
@@ -6,12 +6,32 @@ import { iconoUsuario, iconoDestino } from '../lib/geo'
 
 export default function RoutingMachine({ from, to, onRouteFound, onError }) {
   const map = useMap()
+  const controlRef = useRef(null)
+  const lastKeyRef = useRef('')
 
   useEffect(() => {
+    if (!map || !from || !to) return
+
+    // 🔑 Clave única: si no cambia, no recreamos el control
+    const key = `${from[0]},${from[1]}|${to[0]},${to[1]}`
+    if (key === lastKeyRef.current) return
+    lastKeyRef.current = key
+
+    // Destruir el control anterior si existe
+    if (controlRef.current) {
+      try {
+        map.removeControl(controlRef.current)
+      } catch {
+        /* ignore */
+      }
+      controlRef.current = null
+    }
+
+    // Crear nuevo control
     const control = L.Routing.control({
       waypoints: [L.latLng(from[0], from[1]), L.latLng(to[0], to[1])],
       lineOptions: {
-        styles: [{ color: '#C6862E', weight: 5, opacity: 0.88 }],
+        styles: [{ color: '#5fff4e', weight: 5, opacity: 0.9 }],
       },
       createMarker: (i, wp) =>
         L.marker(wp.latLng, {
@@ -39,14 +59,19 @@ export default function RoutingMachine({ from, to, onRouteFound, onError }) {
       onError && onError()
     })
 
+    controlRef.current = control
+
     return () => {
-      try {
-        map.removeControl(control)
-      } catch {
-        /* ignore */
+      if (controlRef.current) {
+        try {
+          map.removeControl(controlRef.current)
+        } catch {
+          /* ignore */
+        }
+        controlRef.current = null
       }
     }
-  }, [from, to, map, onRouteFound, onError])
+  }, [map, from, to, onRouteFound, onError])
 
   return null
 }

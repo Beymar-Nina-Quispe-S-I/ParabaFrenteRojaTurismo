@@ -1,10 +1,16 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import L from 'leaflet'
 import MapView from '../components/MapView'
 import HideDetailModal from '../components/HideDetailModal'
 import { sb } from '../lib/supabase'
 import { HIDES_INICIALES, TRAMOS_RUTA } from '../data/hides'
 import { haversineKm } from '../lib/geo'
-import L from 'leaflet'
 
 export default function MapaView() {
   const [ubicaciones, setUbicaciones] = useState(HIDES_INICIALES)
@@ -17,7 +23,6 @@ export default function MapaView() {
 
   const [selectedHide, setSelectedHide] = useState(null)
 
-  // Guardamos la instancia del mapa para volar a los hides
   const mapRef = useRef(null)
 
   // ----------------------------------------------------------
@@ -76,7 +81,7 @@ export default function MapaView() {
   }, [])
 
   // ----------------------------------------------------------
-  // 🗺️ Ver mapa guía → acercar a los hides
+  // Ver mapa guía — acercar a los hides
   // ----------------------------------------------------------
   function verMapaGuia() {
     const lista = ubicaciones.length ? ubicaciones : HIDES_INICIALES
@@ -93,15 +98,6 @@ export default function MapaView() {
           maxZoom: 14,
         })
       }
-    } else {
-      // fallback
-      const lats = lista.map((u) => u.latitud)
-      const lngs = lista.map((u) => u.longitud)
-      setCenter([
-        (Math.min(...lats) + Math.max(...lats)) / 2,
-        (Math.min(...lngs) + Math.max(...lngs)) / 2,
-      ])
-      setZoom(13)
     }
   }
 
@@ -110,31 +106,72 @@ export default function MapaView() {
   // ----------------------------------------------------------
   function trazarRuta(lat, lng, nombre, modo = 'vehiculo') {
     const origen = userPosition || { lat: -18.11, lng: -64.88 }
-    setRoute({
-      from: [origen.lat, origen.lng],
-      to: [lat, lng],
-      modo,
+
+    setRoute((prev) => {
+      if (
+        prev &&
+        prev.to[0] === lat &&
+        prev.to[1] === lng &&
+        prev.from[0] === origen.lat &&
+        prev.from[1] === origen.lng &&
+        prev.modo === modo
+      ) {
+        return prev
+      }
+      return {
+        from: [origen.lat, origen.lng],
+        to: [lat, lng],
+        modo,
+      }
     })
+
     setMapHeaderLabel(modo === 'caminar' ? 'Ruta a pie' : 'Ruta activa')
-    setRouteInfo({ nombre, km: '...', min: '...', modo })
+
+    setRouteInfo((prev) => {
+      if (prev && prev.nombre === nombre && prev.modo === modo) return prev
+      return { nombre, km: '...', min: '...', modo }
+    })
   }
 
+  // ----------------------------------------------------------
+  // Callbacks estables
+  // ----------------------------------------------------------
+  const handleRouteFound = useCallback((km, min) => {
+    setRouteInfo((r) => (r ? { ...r, km, min } : r))
+  }, [])
+
+  const handleRouteError = useCallback(() => {
+    alert('No se pudo calcular la ruta')
+    setRoute(null)
+    setRouteInfo(null)
+  }, [])
+
+  const handleMapReady = useCallback((map) => {
+    mapRef.current = map
+  }, [])
+
+  // ----------------------------------------------------------
+  // Abrir modal grande
+  // ----------------------------------------------------------
   function handleHideClick(hide) {
     setSelectedHide(hide)
   }
 
+  // ----------------------------------------------------------
+  // Botón "Ir" desde el popup chiquito
+  // ----------------------------------------------------------
   function handleIrDirecto(hide) {
     trazarRuta(hide.latitud, hide.longitud, hide.nombre, 'vehiculo')
     if (mapRef.current) {
       mapRef.current.flyTo([hide.latitud, hide.longitud], 15, {
         duration: 1,
       })
-    } else {
-      setCenter([hide.latitud, hide.longitud])
-      setZoom(15)
     }
   }
 
+  // ----------------------------------------------------------
+  // Botones del modal grande
+  // ----------------------------------------------------------
   function handleIrVehiculo() {
     if (!selectedHide) return
     trazarRuta(
@@ -171,6 +208,9 @@ export default function MapaView() {
     setSelectedHide(null)
   }
 
+  // ----------------------------------------------------------
+  // Exponer para RutasView
+  // ----------------------------------------------------------
   useEffect(() => {
     window.__trazarRuta = (lat, lng, nombre) =>
       trazarRuta(lat, lng, nombre, 'vehiculo')
@@ -186,6 +226,17 @@ export default function MapaView() {
     setMapHeaderLabel('Mapa')
   }
 
+  // ----------------------------------------------------------
+  // Memo de route para no recrear el objeto
+  // ----------------------------------------------------------
+  const routeKey = route
+    ? `${route.from[0]},${route.from[1]}|${route.to[0]},${route.to[1]}|${route.modo}`
+    : ''
+  const routeMemo = useMemo(() => route, [routeKey])
+
+  // ----------------------------------------------------------
+  // Distancia + estado del hide seleccionado
+  // ----------------------------------------------------------
   let distanciaSeleccionada = null
   let estadoSeleccionado = 'ok'
 
@@ -203,6 +254,9 @@ export default function MapaView() {
     if (tramo) estadoSeleccionado = tramo.estado
   }
 
+  // ----------------------------------------------------------
+  // Render
+  // ----------------------------------------------------------
   return (
     <div className="mobile-view active">
       <div className="mobile-map-container">
@@ -212,20 +266,12 @@ export default function MapaView() {
             zoom={zoom}
             userPosition={userPosition}
             ubicaciones={ubicaciones}
-            route={route}
-            onRouteFound={(km, min) =>
-              setRouteInfo((r) => (r ? { ...r, km, min } : r))
-            }
-            onRouteError={() => {
-              alert('No se pudo calcular la ruta')
-              setRoute(null)
-              setRouteInfo(null)
-            }}
+            route={routeMemo}
+            onRouteFound={handleRouteFound}
+            onRouteError={handleRouteError}
             onHideClick={handleHideClick}
             onIrDirecto={handleIrDirecto}
-            onMapReady={(map) => {
-              mapRef.current = map
-            }}
+            onMapReady={handleMapReady}
           />
         </div>
       </div>
@@ -245,6 +291,22 @@ export default function MapaView() {
             <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
           </svg>
           <span>{mapHeaderLabel}</span>
+        </div>
+      </div>
+
+      {/* Aviso ARRIBA — chip flotante */}
+      <div className="ruta-aviso">
+        <div className="ruta-aviso-item">
+          <span className="ruta-aviso-dot ok" />
+          <span>Transitable</span>
+        </div>
+        <div className="ruta-aviso-item">
+          <span className="ruta-aviso-dot barro" />
+          <span>Barro</span>
+        </div>
+        <div className="ruta-aviso-item">
+          <span className="ruta-aviso-dot bloqueado" />
+          <span>Bloqueado</span>
         </div>
       </div>
 
@@ -288,22 +350,6 @@ export default function MapaView() {
             <path d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-      </div>
-
-      {/* Leyenda */}
-      <div className="ruta-leyenda">
-        <div className="ruta-leyenda-item">
-          <span className="ruta-leyenda-dot ok" />
-          <span>Transitable</span>
-        </div>
-        <div className="ruta-leyenda-item">
-          <span className="ruta-leyenda-dot barro" />
-          <span>Barro / charcos</span>
-        </div>
-        <div className="ruta-leyenda-item">
-          <span className="ruta-leyenda-dot bloqueado" />
-          <span>Bloqueado</span>
-        </div>
       </div>
 
       {/* Controles */}
