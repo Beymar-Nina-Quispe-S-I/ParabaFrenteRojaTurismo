@@ -3576,7 +3576,296 @@ a,
   }
 }
 
+/* ==========================================================
+   FORMULARIO REGISTRAR RUTA
+   ========================================================== */
+.ruta-form-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(27, 27, 47, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: rutaFormFadeIn 0.25s ease-out;
+}
 
+@keyframes rutaFormFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.ruta-form-modal {
+  background: #fff;
+  border-radius: 22px;
+  width: 100%;
+  max-width: 460px;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: 0 30px 60px rgba(27, 27, 47, 0.35);
+  animation: rutaFormPopIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes rutaFormPopIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ruta-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid #ece9e2;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 2;
+  border-radius: 22px 22px 0 0;
+}
+
+.ruta-form-header h2 {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1b1b2f;
+  margin: 0;
+}
+
+.ruta-form-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #f4f3ef;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.ruta-form-close:hover {
+  background: #ebe9e2;
+}
+
+.ruta-form-close:active {
+  transform: scale(0.92);
+}
+
+.ruta-form-close svg {
+  width: 16px;
+  height: 16px;
+  color: #4a4a63;
+}
+
+.ruta-form-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ruta-form-photo {
+  display: block;
+  cursor: pointer;
+  margin-bottom: 6px;
+}
+
+.ruta-form-photo-preview,
+.ruta-form-photo-empty {
+  width: 100%;
+  height: 160px;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  border: 2px dashed #d8d6cc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #8f8da6;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.ruta-form-photo-empty:hover {
+  border-color: #d6483f;
+  background: #fff5f4;
+  color: #d6483f;
+}
+
+.ruta-form-photo-preview {
+  border: 2px solid #d6483f;
+}
+
+.ruta-form-photo-empty svg {
+  width: 32px;
+  height: 32px;
+}
+
+.ruta-form-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6b6a66;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-top: 6px;
+  display: block;
+}
+
+.ruta-form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #e7e5de;
+  border-radius: 12px;
+  background: #fbfaf8;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.ruta-form-input:focus {
+  outline: none;
+  border-color: #d6483f;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(214, 72, 63, 0.1);
+}
+
+textarea.ruta-form-input {
+  resize: vertical;
+  min-height: 60px;
+  font-family: 'Inter', sans-serif;
+}
+
+select.ruta-form-input {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6a66' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+.ruta-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.ruta-form-row>div {
+  display: flex;
+  flex-direction: column;
+}
+
+.ruta-form-geo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px;
+  border: 1.5px solid #d7e6e8;
+  background: #eef4f5;
+  color: #326e7a;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.ruta-form-geo:hover {
+  background: #e0edee;
+}
+
+.ruta-form-geo:active {
+  transform: scale(0.97);
+}
+
+.ruta-form-geo svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ruta-form-error {
+  padding: 10px 14px;
+  background: #fdf2f1;
+  border-left: 4px solid #c0392b;
+  color: #c0392b;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  animation: rutaFormFadeIn 0.3s ease-out;
+}
+
+.ruta-form-submit {
+  margin-top: 6px;
+  padding: 15px;
+  background: linear-gradient(135deg, #d6483f, #b23830);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(214, 72, 63, 0.32);
+  transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s;
+}
+
+.ruta-form-submit:hover:not(:disabled) {
+  box-shadow: 0 14px 30px rgba(214, 72, 63, 0.42);
+  transform: translateY(-1px);
+}
+
+.ruta-form-submit:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.ruta-form-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+@media (max-width: 480px) {
+  .ruta-form-modal {
+    border-radius: 20px;
+    max-height: 94vh;
+  }
+
+  .ruta-form-body {
+    padding: 16px;
+  }
+
+  .ruta-form-photo-preview,
+  .ruta-form-photo-empty {
+    height: 140px;
+  }
+
+  .ruta-form-row {
+    grid-template-columns: 1fr;
+  }
+}
 
 
 /* ==========================================================
