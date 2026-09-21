@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import './App.css'
 
 import Toast from './components/Toast'
@@ -9,16 +9,17 @@ import BottomNav from './components/BottomNav'
 import DesktopLayout from './components/DesktopLayout'
 import ExitConfirmModal from './components/ExitConfirmModal'
 
-import InicioView from './views/InicioView'
-import MapaView from './views/MapaView'
-import AvistamientosView from './views/AvistamientosView'
-import RutasView from './views/RutasView'
-
 import { useToast } from './hooks/useToast'
 import { useAuth } from './hooks/useAuth'
 import { useMediaQuery } from './hooks/useMediaQuery'
 import { useBeforeUnload } from './hooks/useBeforeUnload'
 import { useBackGuard } from './hooks/useBackGuard'
+
+// 👇 Lazy load de las vistas (solo se descargan cuando se usan)
+const InicioView = lazy(() => import('./views/InicioView'))
+const MapaView = lazy(() => import('./views/MapaView'))
+const AvistamientosView = lazy(() => import('./views/AvistamientosView'))
+const RutasView = lazy(() => import('./views/RutasView'))
 
 export default function App() {
   const [view, setView] = useState('inicio')
@@ -64,7 +65,12 @@ export default function App() {
   function onTrazar(lat, lng, nombre) {
     setView('mapa')
     setTimeout(() => {
-      window.__trazarRuta && window.__trazarRuta(lat, lng, nombre)
+      if (window.__volarA) {
+        window.__volarA(lat, lng, nombre)
+      }
+      if (window.__trazarRuta) {
+        window.__trazarRuta(lat, lng, nombre)
+      }
     }, 400)
   }
 
@@ -73,7 +79,13 @@ export default function App() {
   }
 
   const content = (
-    <>
+    <Suspense
+      fallback={
+        <div className="view-loader">
+          <div className="view-loader-spinner" />
+        </div>
+      }
+    >
       {view === 'inicio' && (
         <InicioView
           onNavigate={setView}
@@ -91,7 +103,7 @@ export default function App() {
           onOpenModal={openModal}
         />
       )}
-    </>
+    </Suspense>
   )
 
   return (

@@ -1,0 +1,412 @@
+/* ==========================================================
+   CARDS, CAROUSEL, WEATHER, ALERTS, AVISTAMIENTOS, RUTAS
+   ========================================================== */
+
+/* ---- Cards ---- */
+.mobile-card {
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    padding: 20px;
+    margin: 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    width: calc(100% - 32px);
+}
+
+.mobile-card h3 {
+    margin-bottom: 16px;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 0.98rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mobile-card h3 svg {
+    color: var(--accent);
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+}
+
+.quick-route-card {
+    margin: 0 16px 16px;
+    padding: 18px 20px;
+    border-radius: var(--r-lg);
+    background: linear-gradient(135deg, var(--route), #d99a3e);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    box-shadow: 0 10px 24px rgba(198, 134, 46, 0.32);
+}
+
+.quick-route-card .qr-text h4 {
+    font-family: 'Sora', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+
+.quick-route-card .qr-text p {
+    font-size: 0.8rem;
+    opacity: 0.92;
+}
+
+.quick-route-card button {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.22);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s var(--ease-spring);
+}
+
+.quick-route-card button:active {
+    transform: scale(0.9);
+}
+
+.quick-route-card svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* ---- Weather ---- */
+.mobile-weather {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+.mobile-weather-icon {
+    font-size: 2.4rem;
+    flex-shrink: 0;
+}
+
+.mobile-weather-info {
+    flex: 1;
+}
+
+.mobile-weather-temp {
+    font-family: 'Sora', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--ink);
+}
+
+.mobile-weather-desc {
+    font-size: 0.88rem;
+    color: var(--text-soft);
+}
+
+/* ---- Alerts ---- */
+.mobile-alert {
+    padding: 13px 14px;
+    border-radius: var(--r-sm);
+    margin-top: 10px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: transform 0.15s var(--ease-spring);
+}
+
+.mobile-alert:active {
+    transform: scale(0.98);
+}
+
+.mobile-alert.red {
+    background: #fdf2f1;
+    border-left: 4px solid var(--danger);
+}
+
+.mobile-alert.orange {
+    background: #fbf3e7;
+    border-left: 4px solid var(--warn);
+}
+
+.mobile-alert.green {
+    background: #f2f8f3;
+    border-left: 4px solid var(--sage);
+}
+
+/* ---- Avistamientos ---- */
+.mobile-avistamiento-item {
+    padding: 14px 16px;
+    background: #f9f8f6;
+    border-radius: var(--r-sm);
+    border-left: 4px solid var(--accent);
+    margin-bottom: 10px;
+    transition: transform 0.15s var(--ease-spring), background 0.2s;
+}
+
+.mobile-avistamiento-item:active {
+    background: #f2f1ec;
+    transform: scale(0.98);
+}
+
+.avistamiento-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    gap: 8px;
+}
+
+.avistamiento-user {
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.avistamiento-date {
+    color: #a6a49b;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+}
+
+.avistamiento-especie {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.92rem;
+}
+
+.avistamiento-lugar {
+    font-size: 0.8rem;
+    color: var(--text-soft);
+    margin-top: 3px;
+}
+
+.badge-count {
+    background: var(--accent);
+    color: white;
+    padding: 3px 9px;
+    border-radius: var(--r-pill);
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-top: 7px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 34px 16px;
+    color: var(--text-soft);
+}
+
+.empty-state svg {
+    width: 40px;
+    height: 40px;
+    color: #d8d6cc;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    font-size: 0.88rem;
+}
+
+/* ---- Rutas (tarjeta) ---- */
+.ruta-item {
+    padding: 15px 16px;
+    background: #f9f8f6;
+    border-radius: var(--r-sm);
+    border-left: 4px solid var(--route);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.15s var(--ease-spring);
+}
+
+.ruta-item:active {
+    transform: scale(0.98);
+}
+
+.ruta-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ruta-nombre {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 0.92rem;
+}
+
+.ruta-meta {
+    font-size: 0.78rem;
+    color: var(--text-soft);
+    margin-top: 3px;
+}
+
+.ruta-distancia {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--route);
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.btn-ruta-trazar {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    background: var(--route);
+    color: white;
+    border: none;
+    border-radius: var(--r-pill);
+    font-weight: 700;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: transform 0.15s var(--ease-spring), background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Sora', sans-serif;
+}
+
+.btn-ruta-trazar:active {
+    transform: scale(0.93);
+    background: var(--route-hover);
+}
+
+.btn-ruta-trazar svg {
+    width: 14px;
+    height: 14px;
+}
+
+.ruta-filter-note {
+    font-size: 0.78rem;
+    color: var(--text-soft);
+    background: #f2f8f3;
+    border: 1px solid #cfe6d3;
+    padding: 10px 12px;
+    border-radius: var(--r-sm);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ruta-filter-note svg {
+    width: 16px;
+    height: 16px;
+    color: var(--sage);
+    flex-shrink: 0;
+}
+
+/* ---- Carousel (por si se usa en otro sitio) ---- */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    height: 50vh;
+    height: 50dvh;
+    min-height: 350px;
+    max-height: 450px;
+    overflow: hidden;
+    margin: 0;
+    margin-top: calc(-1 * var(--safe-top));
+    padding-top: var(--safe-top);
+}
+
+.carousel-slides {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s var(--ease-spring);
+    will-change: transform;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+}
+
+.carousel-slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(27, 27, 47, 0.88) 0%, rgba(27, 27, 47, 0.25) 55%, rgba(27, 27, 47, 0.08) 100%);
+}
+
+.carousel-content {
+    position: relative;
+    z-index: 1;
+    padding: 24px;
+    color: white;
+    width: 100%;
+}
+
+.carousel-content .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    opacity: 0.85;
+    margin-bottom: 4px;
+}
+
+.carousel-content h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.carousel-content p {
+    font-size: 0.86rem;
+    opacity: 0.92;
+    margin-bottom: 16px;
+    max-width: 34ch;
+}
+
+.carousel-content .btn-explore {
+    padding: 11px 22px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--r-pill);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.82rem;
+    transition: transform 0.15s var(--ease-spring);
+    box-shadow: 0 6px 18px rgba(214, 72, 63, 0.45);
+    font-family: 'Sora', sans-serif;
+}
+
+.carousel-content .btn-explore:active {
+    transform: scale(0.94);
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    z-index: 2;
+}
+
+.carousel-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: width 0.25s var(--ease-out), background 0.25s;
+}
+
+.carousel-dot.active {
+    background: white;
+    width: 22px;
+    border-radius: 4px;
+}

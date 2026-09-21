@@ -24,8 +24,12 @@ export function useAuth() {
       .or(`email.eq.${usuario},usuario.eq.${usuario}`)
       .limit(1)
 
-    if (error || !data || data.length === 0 || data[0].password !== password) {
-      throw new Error('Usuario o contraseña incorrectos')
+    if (error || !data || data.length === 0) {
+      throw new Error('Usuario no encontrado')
+    }
+
+    if (data[0].password !== password) {
+      throw new Error('Contraseña incorrecta')
     }
 
     const u = {

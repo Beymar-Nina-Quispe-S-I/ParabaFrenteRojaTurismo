@@ -9,6 +9,7 @@ export default function HideDetailModal({
   onIr,
 }) {
   const estado = ESTADOS_RUTA[estadoTramo] || ESTADOS_RUTA.ok
+  const esRuta = hide?.tipo === 'ruta'
 
   useEffect(() => {
     if (!hide) return
@@ -26,6 +27,8 @@ export default function HideDetailModal({
       ? `${Math.round(distanciaKm * 1000)} m`
       : `${distanciaKm.toFixed(1)} km`
 
+  const imagen = hide.imagen_url || hide.imagen
+
   return (
     <div
       className="hide-modal-overlay"
@@ -33,10 +36,10 @@ export default function HideDetailModal({
       role="dialog"
       aria-modal="true"
     >
-      <div className="hide-modal">
+      <div className={`hide-modal ${esRuta ? 'es-ruta' : ''}`}>
         <div
           className="hide-modal-photo"
-          style={{ backgroundImage: `url('${hide.imagen}')` }}
+          style={{ backgroundImage: `url('${imagen}')` }}
         >
           <button
             className="hide-modal-close"
@@ -53,10 +56,17 @@ export default function HideDetailModal({
             </svg>
           </button>
 
-          <div className={`hide-modal-estado estado-${estadoTramo}`}>
-            <span className="hide-modal-estado-dot" />
-            {estado.label}
-          </div>
+          {esRuta ? (
+            <div className="hide-modal-estado estado-ruta">
+              <span className="hide-modal-estado-dot" />
+              Ruta comunitaria
+            </div>
+          ) : (
+            <div className={`hide-modal-estado estado-${estadoTramo}`}>
+              <span className="hide-modal-estado-dot" />
+              {estado.label}
+            </div>
+          )}
         </div>
 
         <div className="hide-modal-body">
@@ -83,29 +93,50 @@ export default function HideDetailModal({
               </div>
             </div>
 
-            <div className="hide-modal-stat">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <circle cx="6" cy="19" r="2.4" />
-                <circle cx="18" cy="5" r="2.4" />
-                <path d="M8.4 19h7.6a3.2 3.2 0 000-6.4H8a3.2 3.2 0 010-6.4h7.6" />
-              </svg>
-              <div>
-                <span className="hide-modal-stat-label">Estado</span>
-                <strong
-                  className="hide-modal-stat-value"
-                  style={{ color: estado.color }}
+            {!esRuta && (
+              <div className="hide-modal-stat">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
                 >
-                  {estado.icono} {estado.label}
-                </strong>
+                  <circle cx="6" cy="19" r="2.4" />
+                  <circle cx="18" cy="5" r="2.4" />
+                  <path d="M8.4 19h7.6a3.2 3.2 0 000-6.4H8a3.2 3.2 0 010-6.4h7.6" />
+                </svg>
+                <div>
+                  <span className="hide-modal-stat-label">Estado</span>
+                  <strong
+                    className="hide-modal-stat-value"
+                    style={{ color: estado.color }}
+                  >
+                    {estado.icono} {estado.label}
+                  </strong>
+                </div>
               </div>
-            </div>
+            )}
 
-            {hide.especie && (
+            {esRuta && hide.especie && (
+              <div className="hide-modal-stat">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                </svg>
+                <div>
+                  <span className="hide-modal-stat-label">Especie</span>
+                  <strong className="hide-modal-stat-value">
+                    {hide.especie}
+                  </strong>
+                </div>
+              </div>
+            )}
+
+            {hide.especie && !esRuta && (
               <div className="hide-modal-stat">
                 <svg
                   viewBox="0 0 24 24"
@@ -140,9 +171,11 @@ export default function HideDetailModal({
             </div>
           )}
 
-          {/* Botón único: Recorrer */}
           <div className="hide-modal-actions">
-            <button className="hide-modal-btn ir" onClick={onIr}>
+            <button
+              className={`hide-modal-btn ${esRuta ? 'ruta' : 'ir'}`}
+              onClick={onIr}
+            >
               <svg
                 viewBox="0 0 24 24"
                 fill="none"

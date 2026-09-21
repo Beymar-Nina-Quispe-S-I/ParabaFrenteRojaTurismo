@@ -26,19 +26,29 @@ export default function AvistamientosView({ onOpenModal }) {
 
   return (
     <div className="mobile-view active">
-      <div className="mobile-header scrolled" style={{ position: 'fixed' }}>
-        <div className="mobile-header-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <path d="M3 17l6-6 4 4 8-8m0 0v7m0-7h-7" />
-          </svg>
-          <span>Avistamientos</span>
-        </div>
-      </div>
-      <div style={{ height: 'calc(56px + var(--safe-top))' }} />
+      {/* Título de vista para móvil */}
+      <header className="mobile-view-title">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M3 17l6-6 4 4 8-8m0 0v7m0-7h-7" />
+        </svg>
+        <span>Avistamientos</span>
+      </header>
 
       <div className="mobile-card">
         <h3>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
             <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015.356-1.857M9 20v-2a3 3 0 015.356-1.857M15 7a3 3 0 11-6 0 3 3 0 016 0zM6 8a2 2 0 11-4 0 2 2 0 014 0zM22 8a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
           Comunidad
@@ -62,7 +72,12 @@ export default function AvistamientosView({ onOpenModal }) {
             </>
           ) : list.length === 0 ? (
             <div className="empty-state">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.6}
+              >
                 <path d="M3 17l6-6 4 4 8-8m0 0v7m0-7h-7" />
               </svg>
               <p>Aún no hay avistamientos registrados. ¡Sé el primero!</p>

@@ -16,6 +16,9 @@ import { HIDES_INICIALES, TRAMOS_RUTA, ESTADOS_RUTA } from '../data/hides'
 
 fixLeafletDefaultIcon()
 
+// ------------------------------------------------------------
+// Icono de hide base (bandera roja/verde/amarilla)
+// ------------------------------------------------------------
 function iconoHide(nombre, estadoTramo = 'ok') {
   const color =
     estadoTramo === 'bloqueado'
@@ -44,27 +47,38 @@ function iconoHide(nombre, estadoTramo = 'ok') {
   })
 }
 
-function iconoRutaComunidad(nombre) {
+// ------------------------------------------------------------
+// Icono de ruta comunitaria (bandera teal con estrella)
+// ------------------------------------------------------------
+function iconoRutaComunidad(nombre, imagen) {
+  const foto = imagen
+    ? `<div class="ruta-pin-foto" style="background-image:url('${imagen}')"></div>`
+    : `<div class="ruta-pin-icon">
+         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+           <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+         </svg>
+       </div>`
+
   return L.divIcon({
     className: '',
     html: `
-      <div class="hide-pin">
-        <div class="hide-pin-head" style="background:#326e7a">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-            <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
+      <div class="ruta-pin">
+        <div class="ruta-pin-head">
+          ${foto}
         </div>
-        <div class="hide-pin-tip" style="border-top-color:#326e7a"></div>
-        <div class="hide-pin-label">${nombre}</div>
+        <div class="ruta-pin-tip"></div>
+        <div class="ruta-pin-label">${nombre}</div>
       </div>
     `,
-    iconSize: [46, 66],
-    iconAnchor: [23, 66],
-    popupAnchor: [0, -58],
+    iconSize: [50, 72],
+    iconAnchor: [25, 72],
+    popupAnchor: [0, -64],
   })
 }
 
+// ------------------------------------------------------------
+// Curva realista tipo sendero
+// ------------------------------------------------------------
 function generarCurva(desde, hasta, tramoId = '') {
   const [lat1, lng1] = desde
   const [lat2, lng2] = hasta
@@ -94,6 +108,9 @@ function generarCurva(desde, hasta, tramoId = '') {
   return curva
 }
 
+// ------------------------------------------------------------
+// Helpers Leaflet
+// ------------------------------------------------------------
 function FitToHides({ hideCoords, padding = 0.25 }) {
   const map = useMap()
   useEffect(() => {
@@ -141,6 +158,9 @@ function MapInstanceHandler({ onReady }) {
   return null
 }
 
+// ------------------------------------------------------------
+// Componente principal
+// ------------------------------------------------------------
 export default function MapView({
   center,
   zoom,
@@ -200,6 +220,7 @@ export default function MapView({
       <FitToHides hideCoords={hideCoords} />
       <MapInstanceHandler onReady={onMapReady} />
 
+      {/* ---- TRAMOS DE LA RUTA BASE ---- */}
       {tramosLineas.map((t) => (
         <Polyline
           key={t.id}
@@ -226,6 +247,7 @@ export default function MapView({
         </Polyline>
       ))}
 
+      {/* ---- MARCADOR DEL USUARIO ---- */}
       {userPosition && (
         <Marker
           key={`user-${userPosition.lat}-${userPosition.lng}`}
@@ -234,6 +256,7 @@ export default function MapView({
         />
       )}
 
+      {/* ---- MARCADORES DE HIDES BASE ---- */}
       {lista.map((u) => {
         const dist = userPosition
           ? haversineKm(userPosition.lat, userPosition.lng, u.latitud, u.longitud)
@@ -268,7 +291,7 @@ export default function MapView({
                 <div className="hide-popup-actions">
                   <button
                     className="hide-popup-btn info"
-                    onClick={() => onHideClick && onHideClick(u)}
+                    onClick={() => onHideClick && onHideClick({ ...u, tipo: 'hide' })}
                   >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                       <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -291,6 +314,7 @@ export default function MapView({
         )
       })}
 
+      {/* ---- MARCADORES DE RUTAS COMUNITARIAS ---- */}
       {rutasComunidad.map((r) => {
         const dist = userPosition
           ? haversineKm(userPosition.lat, userPosition.lng, r.latitud, r.longitud)
@@ -306,9 +330,9 @@ export default function MapView({
           <Marker
             key={`ruta-${r.id}`}
             position={[Number(r.latitud), Number(r.longitud)]}
-            icon={iconoRutaComunidad(r.nombre)}
+            icon={iconoRutaComunidad(r.nombre, r.imagen_url)}
           >
-            <Popup className="hide-popup-mini" closeButton maxWidth={220} minWidth={200}>
+            <Popup className="hide-popup-mini" closeButton maxWidth={240} minWidth={220}>
               <div className="hide-popup-body">
                 {r.imagen_url && (
                   <div
@@ -316,9 +340,10 @@ export default function MapView({
                     style={{ backgroundImage: `url('${r.imagen_url}')` }}
                   />
                 )}
+                <span className="hide-popup-tag">Ruta comunitaria</span>
                 <h4 className="hide-popup-title">{r.nombre}</h4>
                 <p className="hide-popup-sub">
-                  {r.descripcion || r.ciudad || 'Ruta comunitaria'}
+                  {r.descripcion || r.ciudad || 'Ruta registrada por la comunidad'}
                 </p>
                 <div className="hide-popup-dist">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -331,7 +356,7 @@ export default function MapView({
                 <div className="hide-popup-actions">
                   <button
                     className="hide-popup-btn info"
-                    onClick={() => onHideClick && onHideClick(r)}
+                    onClick={() => onHideClick && onHideClick({ ...r, tipo: 'ruta' })}
                   >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                       <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -354,6 +379,7 @@ export default function MapView({
         )
       })}
 
+      {/* ---- RUTA DINÁMICA (OSRM) ---- */}
       {route && (
         <RoutingMachine
           from={route.from}

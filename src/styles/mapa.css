@@ -1,0 +1,966 @@
+/* ==========================================================
+   MAPA — contenedor
+   ========================================================== */
+.mapa-view {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 78px - var(--safe-bottom) - 12px);
+    height: calc(100dvh - 78px - var(--safe-bottom) - 12px);
+    overflow: hidden;
+    background: #e8e7e2;
+}
+
+.mapa-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+@media (min-width: 1024px) {
+    .mapa-view {
+        height: calc(100vh - 76px - 40px);
+        border-radius: 20px;
+        margin: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(27, 27, 47, 0.08);
+    }
+}
+
+/* ==========================================================
+   HEADER FLOTANTE DEL MAPA
+   ========================================================== */
+.mapa-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    padding: calc(12px + var(--safe-top)) 14px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.mapa-header-inner {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(27, 27, 47, 0.12);
+    width: 100%;
+    box-sizing: border-box;
+    animation: mapaHeaderIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes mapaHeaderIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mapa-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
+.mapa-header-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #fff5f4;
+    color: #d6483f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mapa-header-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.mapa-header-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+}
+
+.mapa-header-text strong {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.86rem;
+    font-weight: 800;
+    color: #1b1b2f;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.15;
+}
+
+.mapa-header-text span {
+    font-size: 0.66rem;
+    color: #8f8da6;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    margin-top: 1px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mapa-header-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: #f4f3ef;
+    border: none;
+    color: #1b1b2f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.mapa-header-btn:hover {
+    background: #ebe9e2;
+}
+
+.mapa-header-btn:active {
+    transform: scale(0.92);
+}
+
+.mapa-header-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Filtros */
+.mapa-filtros {
+    pointer-events: auto;
+    display: flex;
+    gap: 6px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(27, 27, 47, 0.08);
+    align-self: flex-start;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    animation: mapaHeaderIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+.mapa-filtros::-webkit-scrollbar {
+    display: none;
+}
+
+.mapa-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: none;
+    background: transparent;
+    color: #6b6a66;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.25s, color 0.25s, transform 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.mapa-chip:hover {
+    background: #f4f3ef;
+}
+
+.mapa-chip:active {
+    transform: scale(0.96);
+}
+
+.mapa-chip.active {
+    background: #1b1b2f;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(27, 27, 47, 0.28);
+}
+
+.mapa-chip-count {
+    font-size: 0.62rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: rgba(27, 27, 47, 0.08);
+    color: inherit;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.mapa-chip.active .mapa-chip-count {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================================
+   AVISO DE ESTADOS — centrado horizontal dentro del .mapa-view
+   ========================================================== */
+.mapa-estados {
+    position: absolute;
+    top: calc(118px + var(--safe-top));
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    /* 👈 centra sin depender de transform */
+    width: fit-content;
+    max-width: calc(100% - 24px);
+    z-index: 150;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 8px;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    box-shadow: 0 6px 20px rgba(27, 27, 47, 0.1);
+    box-sizing: border-box;
+    overflow: hidden;
+    pointer-events: none;
+    animation: mapaHeaderIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+
+.mapa-estado {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 9px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    color: #4a4a63;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+    flex-shrink: 0;
+}
+
+.mapa-estado-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.mapa-estado-dot.ok {
+    background: #22c55e;
+    box-shadow: 0 0 0 2.5px rgba(34, 197, 94, 0.2);
+}
+
+.mapa-estado-dot.barro {
+    background: #f59e0b;
+    box-shadow: 0 0 0 2.5px rgba(245, 158, 11, 0.22);
+}
+
+.mapa-estado-dot.bloqueado {
+    background: #ef4444;
+    box-shadow: 0 0 0 2.5px rgba(239, 68, 68, 0.22);
+}
+
+/* ==========================================================
+   RUTA ACTIVA
+   ========================================================== */
+.mapa-ruta-card {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 24px;
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #ffffff;
+    border: 1px solid #ece9e2;
+    border-radius: 18px;
+    box-shadow: 0 12px 32px rgba(27, 27, 47, 0.18);
+    transform: translateY(140%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+    max-width: calc(100% - 28px);
+    box-sizing: border-box;
+}
+
+.mapa-ruta-card.active {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.mapa-ruta-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #c6862e, #d99a3e);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 6px 14px rgba(198, 134, 46, 0.35);
+}
+
+.mapa-ruta-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.mapa-ruta-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.mapa-ruta-body strong {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #1b1b2f;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mapa-ruta-body span {
+    font-size: 0.74rem;
+    color: #6b6a66;
+    margin-top: 2px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mapa-ruta-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: #f4f3ef;
+    border: none;
+    color: #4a4a63;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.mapa-ruta-close:hover {
+    background: #fbe5e3;
+    color: #d6483f;
+}
+
+.mapa-ruta-close:active {
+    transform: scale(0.9);
+}
+
+.mapa-ruta-close svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ==========================================================
+   FABs (botones flotantes derecha)
+   ========================================================== */
+.mapa-fabs {
+    position: absolute;
+    right: 14px;
+    bottom: 24px;
+    z-index: 250;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: mapaHeaderIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+.mapa-fab {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid #ece9e2;
+    color: #1b1b2f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(27, 27, 47, 0.14);
+    transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.25s ease,
+        background 0.2s ease;
+}
+
+.mapa-fab:hover {
+    background: #fafaf8;
+    box-shadow: 0 12px 26px rgba(27, 27, 47, 0.2);
+}
+
+.mapa-fab:active {
+    transform: scale(0.92);
+}
+
+.mapa-fab svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* ==========================================================
+   PANEL DESLIZABLE
+   ========================================================== */
+.mapa-panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(27, 27, 47, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mapa-panel-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mapa-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 501;
+    background: #ffffff;
+    border-radius: 26px 26px 0 0;
+    max-height: 78vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -20px 48px rgba(27, 27, 47, 0.28);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    padding-bottom: calc(20px + var(--safe-bottom));
+}
+
+.mapa-panel.active {
+    transform: translateY(0);
+}
+
+.mapa-panel-handle {
+    width: 42px;
+    height: 4px;
+    background: #d8d6cc;
+    border-radius: 2px;
+    margin: 10px auto 6px;
+    flex-shrink: 0;
+}
+
+.mapa-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 8px 20px 14px;
+    border-bottom: 1px solid #f1efe9;
+    flex-shrink: 0;
+    gap: 12px;
+}
+
+.mapa-panel-header>div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.mapa-panel-header h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #1b1b2f;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+.mapa-panel-header span {
+    font-size: 0.72rem;
+    color: #8f8da6;
+    font-weight: 500;
+}
+
+.mapa-panel-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #f4f3ef;
+    border: none;
+    color: #4a4a63;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.mapa-panel-close:hover {
+    background: #ebe9e2;
+}
+
+.mapa-panel-close:active {
+    transform: scale(0.9);
+}
+
+.mapa-panel-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+.mapa-panel-list {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mapa-panel-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #fbfaf8;
+    border: 1px solid #f1efe9;
+    border-radius: 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s, transform 0.15s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.2s;
+}
+
+.mapa-panel-item:hover {
+    background: #f4f3ef;
+    border-color: #e7e5de;
+}
+
+.mapa-panel-item:active {
+    transform: scale(0.98);
+}
+
+.mapa-panel-item-thumb {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #e7e5de;
+}
+
+.mapa-panel-item-img {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+.mapa-panel-item-badge {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.mapa-panel-item-badge.hide {
+    background: #d6483f;
+}
+
+.mapa-panel-item-badge.ruta {
+    background: #326e7a;
+}
+
+.mapa-panel-item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.mapa-panel-item-info strong {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.86rem;
+    font-weight: 800;
+    color: #1b1b2f;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mapa-panel-item-info>span {
+    font-size: 0.72rem;
+    color: #8f8da6;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mapa-panel-item-dist {
+    font-size: 0.68rem !important;
+    color: #c6862e !important;
+    font-weight: 700 !important;
+    margin-top: 4px !important;
+}
+
+.mapa-panel-item-arrow {
+    width: 16px;
+    height: 16px;
+    color: #d8d6cc;
+    flex-shrink: 0;
+    transition: transform 0.25s ease, color 0.2s ease;
+}
+
+.mapa-panel-item:hover .mapa-panel-item-arrow {
+    transform: translateX(3px);
+    color: #d6483f;
+}
+
+.mapa-panel-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: #8f8da6;
+    font-size: 0.85rem;
+}
+
+/* ==========================================================
+   LEAFLET HELPERS
+   ========================================================== */
+.leaflet-control-zoom,
+.leaflet-routing-container {
+    display: none !important;
+}
+
+.leaflet-interactive {
+    transition: stroke-opacity 0.25s ease;
+}
+
+.leaflet-tooltip.tramo-tooltip-wrapper {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* ==========================================================
+   MARCADOR DEL USUARIO (pulso)
+   ========================================================== */
+.user-location-marker {
+    position: relative;
+    width: 22px;
+    height: 22px;
+}
+
+.user-location-marker .ulm-halo {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(62, 124, 140, 0.35) 0%, rgba(62, 124, 140, 0) 70%);
+    animation: ulmBreathe 2.6s ease-in-out infinite;
+}
+
+.user-location-marker .ulm-pulse {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.55;
+    animation: ulmPulse 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.user-location-marker .ulm-core {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--teal);
+    border: 2.5px solid #ffffff;
+    box-shadow: 0 3px 10px rgba(27, 27, 47, 0.4);
+    z-index: 2;
+}
+
+@keyframes ulmPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.55;
+    }
+
+    75%,
+    100% {
+        transform: scale(2.6);
+        opacity: 0;
+    }
+}
+
+@keyframes ulmBreathe {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+}
+
+/* ==========================================================
+   TOOLTIP DE TRAMOS
+   ========================================================== */
+.tramo-tooltip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    min-width: 140px;
+}
+
+.tramo-tooltip-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.tramo-tooltip strong {
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 1px;
+}
+
+.tramo-tooltip small {
+    font-size: 0.72rem;
+    opacity: 0.85;
+}
+
+.tramo-tooltip.tramo-ok .tramo-tooltip-icon {
+    background: #22c55e;
+}
+
+.tramo-tooltip.tramo-ok strong {
+    color: #15803d;
+}
+
+.tramo-tooltip.tramo-barro .tramo-tooltip-icon {
+    background: #f59e0b;
+}
+
+.tramo-tooltip.tramo-barro strong {
+    color: #b45309;
+}
+
+.tramo-tooltip.tramo-bloqueado .tramo-tooltip-icon {
+    background: #ef4444;
+}
+
+.tramo-tooltip.tramo-bloqueado strong {
+    color: #b91c1c;
+}
+
+/* ==========================================================
+   AVISO DE ESTADOS (compatibilidad - chip arriba)
+   ========================================================== */
+.ruta-aviso {
+    position: absolute;
+    top: calc(56px + var(--safe-top) + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid #e7e5de;
+    border-radius: 999px;
+    padding: 6px 10px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    box-shadow: 0 8px 22px rgba(27, 27, 47, 0.12);
+    z-index: 200;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    pointer-events: none;
+    max-width: calc(100% - 24px);
+    box-sizing: border-box;
+    animation: rutaAvisoIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes rutaAvisoIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.ruta-aviso-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    background: #f9f8f6;
+    border-radius: 999px;
+    color: #4a4a63;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.ruta-aviso-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2.5px rgba(34, 197, 94, 0.2);
+}
+
+.ruta-aviso-dot.ok {
+    background: #22c55e;
+}
+
+.ruta-aviso-dot.barro {
+    background: #f59e0b;
+    box-shadow: 0 0 0 2.5px rgba(245, 158, 11, 0.22);
+}
+
+.ruta-aviso-dot.bloqueado {
+    background: #ef4444;
+    box-shadow: 0 0 0 2.5px rgba(239, 68, 68, 0.22);
+}
+
+/* ==========================================================
+   LEYENDA (compatibilidad)
+   ========================================================== */
+.ruta-leyenda {
+    position: absolute;
+    bottom: 100px;
+    left: 16px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    border: 1px solid #e7e5de;
+    border-radius: 14px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 8px 24px rgba(27, 27, 47, 0.12);
+    z-index: 500;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    pointer-events: none;
+    max-width: calc(100% - 32px);
+    box-sizing: border-box;
+}
+
+.ruta-leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4a4a63;
+    font-weight: 600;
+}
+
+.ruta-leyenda-dot {
+    width: 18px;
+    height: 4px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.ruta-leyenda-dot.ok {
+    background: #22c55e;
+}
+
+.ruta-leyenda-dot.barro {
+    background: #f59e0b;
+}
+
+.ruta-leyenda-dot.bloqueado {
+    background: linear-gradient(90deg, #ef4444 0 60%, transparent 60% 100%);
+    background-size: 6px 100%;
+}

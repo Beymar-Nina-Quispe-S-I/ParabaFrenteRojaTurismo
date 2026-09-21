@@ -1,0 +1,564 @@
+/* ==========================================================
+   EXIT CONFIRM MODAL
+   ========================================================== */
+.exit-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(27, 27, 47, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 10050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: exitFadeIn 0.25s ease-out;
+}
+
+@keyframes exitFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.exit-modal {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 32px 28px 24px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 24px 60px rgba(27, 27, 47, 0.3), 0 8px 20px rgba(27, 27, 47, 0.15);
+    text-align: center;
+    animation: exitPopIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.exit-modal::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 0%, rgba(214, 72, 63, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+@keyframes exitPopIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.94);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.exit-icon {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fdf2f1, #fbe5e3);
+    color: #d6483f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    position: relative;
+    z-index: 1;
+    animation: exitIconPulse 1.8s ease-in-out infinite;
+}
+
+.exit-icon::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(214, 72, 63, 0.2);
+    animation: exitRingPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes exitIconPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes exitRingPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(1.35);
+        opacity: 0;
+    }
+}
+
+.exit-icon svg {
+    width: 32px;
+    height: 32px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    position: relative;
+    z-index: 1;
+}
+
+.exit-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1b1b2f;
+    letter-spacing: -0.015em;
+    margin: 0 0 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.exit-message {
+    font-size: 0.9rem;
+    color: #6b6a66;
+    line-height: 1.55;
+    margin: 0 0 24px;
+    max-width: 32ch;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.exit-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.exit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 13px 16px;
+    border-radius: 14px;
+    border: none;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.exit-btn:active {
+    transform: scale(0.96);
+}
+
+.exit-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.exit-btn.secondary {
+    background: #f4f3ef;
+    color: #1b1b2f;
+}
+
+.exit-btn.secondary:hover {
+    background: #ebe9e2;
+}
+
+.exit-btn.danger {
+    background: linear-gradient(135deg, #d6483f, #b23830);
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(214, 72, 63, 0.32);
+}
+
+.exit-btn.danger:hover {
+    background: linear-gradient(135deg, #b23830, #962c24);
+    box-shadow: 0 10px 22px rgba(214, 72, 63, 0.42);
+}
+
+@media (max-width: 480px) {
+    .exit-modal {
+        padding: 28px 22px 20px;
+        border-radius: 22px;
+    }
+
+    .exit-title {
+        font-size: 1.08rem;
+    }
+
+    .exit-message {
+        font-size: 0.85rem;
+    }
+}
+
+/* ==========================================================
+   PROFILE DRAWER
+   ========================================================== */
+.profile-drawer {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 85%;
+    max-width: 360px;
+    height: 100%;
+    height: 100vh;
+    height: 100dvh;
+    background: white;
+    z-index: 9998;
+    transition: right 0.35s var(--ease-spring);
+    box-shadow: -14px 0 34px rgba(27, 27, 47, 0.22);
+    padding-top: calc(20px + var(--safe-top));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    will-change: right;
+}
+
+.profile-drawer.active {
+    right: 0;
+}
+
+.profile-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(27, 27, 47, 0.5);
+    z-index: 9997;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.profile-drawer-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.profile-drawer-close {
+    position: absolute;
+    top: calc(16px + var(--safe-top));
+    left: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s var(--ease-spring);
+    z-index: 2;
+}
+
+.profile-drawer-close:active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.9);
+}
+
+.profile-drawer-close svg {
+    width: 20px;
+    height: 20px;
+}
+
+.profile-drawer-header {
+    padding: 60px 20px 24px;
+    text-align: center;
+    background: linear-gradient(135deg, var(--ink), var(--ink-2));
+    color: white;
+    position: relative;
+}
+
+.profile-drawer-avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-size: 1.7rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    border: 3px solid rgba(255, 255, 255, 0.28);
+}
+
+.profile-drawer-name {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.profile-drawer-email {
+    font-size: 0.78rem;
+    opacity: 0.75;
+    margin-top: 2px;
+}
+
+.profile-drawer-body {
+    padding: 16px;
+    flex: 1;
+}
+
+.profile-drawer-item {
+    padding: 15px 14px;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.15s var(--ease-out);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.profile-drawer-item:active {
+    background: #f4f3ee;
+}
+
+.profile-drawer-item svg {
+    width: 19px;
+    height: 19px;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.profile-drawer-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 4px;
+}
+
+/* ==========================================================
+   EXIT CONFIRM MODAL
+   ========================================================== */
+.exit-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(27, 27, 47, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 10050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: exitFadeIn 0.25s ease-out;
+}
+
+@keyframes exitFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.exit-modal {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 32px 28px 24px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 24px 60px rgba(27, 27, 47, 0.3), 0 8px 20px rgba(27, 27, 47, 0.15);
+    text-align: center;
+    animation: exitPopIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.exit-modal::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 0%, rgba(214, 72, 63, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+@keyframes exitPopIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.94);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.exit-icon {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fdf2f1, #fbe5e3);
+    color: #d6483f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    position: relative;
+    z-index: 1;
+    animation: exitIconPulse 1.8s ease-in-out infinite;
+}
+
+.exit-icon::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(214, 72, 63, 0.2);
+    animation: exitRingPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes exitIconPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes exitRingPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(1.35);
+        opacity: 0;
+    }
+}
+
+.exit-icon svg {
+    width: 32px;
+    height: 32px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    position: relative;
+    z-index: 1;
+}
+
+.exit-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1b1b2f;
+    letter-spacing: -0.015em;
+    margin: 0 0 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.exit-message {
+    font-size: 0.9rem;
+    color: #6b6a66;
+    line-height: 1.55;
+    margin: 0 0 24px;
+    max-width: 32ch;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.exit-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.exit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 13px 16px;
+    border-radius: 14px;
+    border: none;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.exit-btn:active {
+    transform: scale(0.96);
+}
+
+.exit-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.exit-btn.secondary {
+    background: #f4f3ef;
+    color: #1b1b2f;
+}
+
+.exit-btn.secondary:hover {
+    background: #ebe9e2;
+}
+
+.exit-btn.danger {
+    background: linear-gradient(135deg, #d6483f, #b23830);
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(214, 72, 63, 0.32);
+}
+
+.exit-btn.danger:hover {
+    background: linear-gradient(135deg, #b23830, #962c24);
+    box-shadow: 0 10px 22px rgba(214, 72, 63, 0.42);
+}
+
+@media (max-width: 480px) {
+    .exit-modal {
+        padding: 28px 22px 20px;
+        border-radius: 22px;
+    }
+
+    .exit-title {
+        font-size: 1.08rem;
+    }
+
+    .exit-message {
+        font-size: 0.85rem;
+    }
+}

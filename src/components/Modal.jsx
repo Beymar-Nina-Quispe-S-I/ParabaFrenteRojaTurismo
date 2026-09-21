@@ -97,7 +97,7 @@ export default function Modal({
     onSpinner(true)
     try {
       const u = await onLogin(loginU.trim(), loginP)
-      onToast(`Bienvenido, ${u.nombre || u.email}!`, 'success')
+      onToast(`Bienvenido, ${u.nombre || u.usuario || u.email}!`, 'success')
       onClose()
     } catch (e) {
       onToast(e.message || 'Error al iniciar sesión', 'error')
@@ -113,7 +113,7 @@ export default function Modal({
     onSpinner(true)
     try {
       await onRegister(regN.trim(), regE.trim(), regU.trim(), regP)
-      onToast('Cuenta creada. Revisa tu correo o inicia sesión', 'success')
+      onToast('Cuenta creada. Ya puedes iniciar sesión', 'success')
       onSwitch('login')
     } catch (e) {
       onToast(e.message || 'Error al registrar', 'error')
@@ -185,13 +185,13 @@ export default function Modal({
         {kind === 'login' && (
           <>
             <Header title="Iniciar Sesión" onClose={onClose} />
-            <label className="field-label">Correo electrónico</label>
+            <label className="field-label">Usuario o correo</label>
             <input
-              type="email"
+              type="text"
               value={loginU}
               onChange={(e) => setLoginU(e.target.value)}
-              placeholder="tu@correo.com"
-              autoComplete="email"
+              placeholder="usuario o tu@correo.com"
+              autoComplete="username"
             />
             <label className="field-label">Contraseña</label>
             <input
@@ -318,7 +318,9 @@ export default function Modal({
               misAvist.map((a) => (
                 <div key={a.id} className="mobile-avistamiento-item">
                   <div className="avistamiento-top">
-                    <strong style={{ color: 'var(--accent)' }}>{a.especie}</strong>
+                    <strong style={{ color: 'var(--accent)' }}>
+                      {a.especie}
+                    </strong>
                     <span className="avistamiento-date">
                       {new Date(
                         a.fecha_avistamiento || a.created_at
@@ -358,7 +360,14 @@ export default function Modal({
             </select>
 
             <button className="btn-secondary" onClick={usarUbicacion}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width={16} height={16}>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                width={16}
+                height={16}
+              >
                 <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
@@ -418,7 +427,12 @@ function Header({ title, onClose }) {
     <div className="modal-header">
       <h2>{title}</h2>
       <button className="btn-close-modal" onClick={onClose}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
           <path d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
@@ -429,7 +443,12 @@ function Header({ title, onClose }) {
 function EmptyState({ text }) {
   return (
     <div className="empty-state">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.6}
+      >
         <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
       </svg>
       <p>{text}</p>
