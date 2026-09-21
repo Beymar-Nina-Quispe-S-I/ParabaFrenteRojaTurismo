@@ -12,12 +12,10 @@ export default function RoutingMachine({ from, to, onRouteFound, onError }) {
   useEffect(() => {
     if (!map || !from || !to) return
 
-    // 🔑 Clave única: si no cambia, no recreamos el control
     const key = `${from[0]},${from[1]}|${to[0]},${to[1]}`
     if (key === lastKeyRef.current) return
     lastKeyRef.current = key
 
-    // Destruir el control anterior si existe
     if (controlRef.current) {
       try {
         map.removeControl(controlRef.current)
@@ -27,11 +25,10 @@ export default function RoutingMachine({ from, to, onRouteFound, onError }) {
       controlRef.current = null
     }
 
-    // Crear nuevo control
     const control = L.Routing.control({
       waypoints: [L.latLng(from[0], from[1]), L.latLng(to[0], to[1])],
       lineOptions: {
-        styles: [{ color: '#5fff4e', weight: 5, opacity: 0.9 }],
+        styles: [{ color: '#C6862E', weight: 5, opacity: 0.9 }],
       },
       createMarker: (i, wp) =>
         L.marker(wp.latLng, {
@@ -39,8 +36,10 @@ export default function RoutingMachine({ from, to, onRouteFound, onError }) {
         }),
       addWaypoints: false,
       draggableWaypoints: false,
-      fitSelectedRoutes: true,
+      fitSelectedRoutes: false,
       show: false,
+      routeWhileDragging: false,
+      autoRoute: true,
       router: L.Routing.osrmv1({
         serviceUrl: 'https://router.project-osrm.org/route/v1',
       }),

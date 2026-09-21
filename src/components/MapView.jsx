@@ -16,9 +16,6 @@ import { HIDES_INICIALES, TRAMOS_RUTA, ESTADOS_RUTA } from '../data/hides'
 
 fixLeafletDefaultIcon()
 
-// ------------------------------------------------------------
-// Marcador tipo bandera
-// ------------------------------------------------------------
 function iconoHide(nombre, estadoTramo = 'ok') {
   const color =
     estadoTramo === 'bloqueado'
@@ -47,51 +44,56 @@ function iconoHide(nombre, estadoTramo = 'ok') {
   })
 }
 
-// ------------------------------------------------------------
-// Curva realista tipo sendero
-// ------------------------------------------------------------
+function iconoRutaComunidad(nombre) {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div class="hide-pin">
+        <div class="hide-pin-head" style="background:#326e7a">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </div>
+        <div class="hide-pin-tip" style="border-top-color:#326e7a"></div>
+        <div class="hide-pin-label">${nombre}</div>
+      </div>
+    `,
+    iconSize: [46, 66],
+    iconAnchor: [23, 66],
+    popupAnchor: [0, -58],
+  })
+}
+
 function generarCurva(desde, hasta, tramoId = '') {
   const [lat1, lng1] = desde
   const [lat2, lng2] = hasta
   const pasos = 24
-
   const dx = lng2 - lng1
   const dy = lat2 - lat1
   const len = Math.sqrt(dx * dx + dy * dy) || 1
   const perpX = -dy / len
   const perpY = dx / len
-
   const seed = tramoId.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
   const seedA = ((seed % 7) - 3) / 10
-
   const curva = []
-
   for (let i = 0; i <= pasos; i++) {
     const t = i / pasos
-
     const baseLat = lat1 + (lat2 - lat1) * t
     const baseLng = lng1 + (lng2 - lng1) * t
-
     const curva1 = Math.sin(t * Math.PI)
     const curva2 = Math.sin(t * Math.PI * 2) * 0.3
-
     const amplitud = (0.15 + Math.abs(seedA) * 0.1) * len
     const offset = (curva1 * 0.85 + curva2) * amplitud
-
     const noise = Math.sin(t * 8 + seed) * len * 0.005
-
     curva.push([
       baseLat + perpY * offset + noise * 0.5,
       baseLng + perpX * offset + noise,
     ])
   }
-
   return curva
 }
 
-// ------------------------------------------------------------
-// Helpers Leaflet
-// ------------------------------------------------------------
 function FitToHides({ hideCoords, padding = 0.25 }) {
   const map = useMap()
   useEffect(() => {
@@ -139,14 +141,12 @@ function MapInstanceHandler({ onReady }) {
   return null
 }
 
-// ------------------------------------------------------------
-// Componente principal
-// ------------------------------------------------------------
 export default function MapView({
   center,
   zoom,
   userPosition,
   ubicaciones,
+  rutasComunidad = [],
   route,
   onRouteFound,
   onRouteError,
@@ -167,21 +167,13 @@ export default function MapView({
       const desde = HIDES_INICIALES.find((h) => h.id === t.desde)
       const hasta = HIDES_INICIALES.find((h) => h.id === t.hasta)
       if (!desde || !hasta) return null
-
       const estado = ESTADOS_RUTA[t.estado] || ESTADOS_RUTA.ok
       const positions = generarCurva(
         [desde.latitud, desde.longitud],
         [hasta.latitud, hasta.longitud],
         t.id
       )
-
-      return {
-        id: t.id,
-        nombre: t.nombre,
-        estado,
-        estadoKey: t.estado,
-        positions,
-      }
+      return { id: t.id, nombre: t.nombre, estado, estadoKey: t.estado, positions }
     }).filter(Boolean)
   }, [])
 
@@ -236,6 +228,7 @@ export default function MapView({
 
       {userPosition && (
         <Marker
+          key={`user-${userPosition.lat}-${userPosition.lng}`}
           position={[userPosition.lat, userPosition.lng]}
           icon={iconoUsuario()}
         />
@@ -243,14 +236,8 @@ export default function MapView({
 
       {lista.map((u) => {
         const dist = userPosition
-          ? haversineKm(
-              userPosition.lat,
-              userPosition.lng,
-              u.latitud,
-              u.longitud
-            )
+          ? haversineKm(userPosition.lat, userPosition.lng, u.latitud, u.longitud)
           : null
-
         const distLabel =
           dist == null
             ? '—'
@@ -264,43 +251,26 @@ export default function MapView({
             position={[Number(u.latitud), Number(u.longitud)]}
             icon={iconoHide(u.nombre)}
           >
-            <Popup
-              className="hide-popup-mini"
-              closeButton
-              maxWidth={220}
-              minWidth={200}
-            >
+            <Popup className="hide-popup-mini" closeButton maxWidth={220} minWidth={200}>
               <div className="hide-popup-body">
                 <h4 className="hide-popup-title">{u.nombre}</h4>
                 <p className="hide-popup-sub">
                   {u.descripcion || u.ciudad || 'Punto de observación'}
                 </p>
-
                 <div className="hide-popup-dist">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                     <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                   </svg>
                   <span>
                     <strong>{distLabel}</strong> de distancia
                   </span>
                 </div>
-
                 <div className="hide-popup-actions">
                   <button
                     className="hide-popup-btn info"
                     onClick={() => onHideClick && onHideClick(u)}
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                       <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     Info
@@ -309,15 +279,73 @@ export default function MapView({
                     className="hide-popup-btn ir"
                     onClick={() => onIrDirecto && onIrDirecto(u)}
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                       <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                     </svg>
-                    Ir
+                    Recorrer
+                  </button>
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        )
+      })}
+
+      {rutasComunidad.map((r) => {
+        const dist = userPosition
+          ? haversineKm(userPosition.lat, userPosition.lng, r.latitud, r.longitud)
+          : null
+        const distLabel =
+          dist == null
+            ? '—'
+            : dist < 1
+            ? `${Math.round(dist * 1000)} m`
+            : `${dist.toFixed(1)} km`
+
+        return (
+          <Marker
+            key={`ruta-${r.id}`}
+            position={[Number(r.latitud), Number(r.longitud)]}
+            icon={iconoRutaComunidad(r.nombre)}
+          >
+            <Popup className="hide-popup-mini" closeButton maxWidth={220} minWidth={200}>
+              <div className="hide-popup-body">
+                {r.imagen_url && (
+                  <div
+                    className="hide-popup-img"
+                    style={{ backgroundImage: `url('${r.imagen_url}')` }}
+                  />
+                )}
+                <h4 className="hide-popup-title">{r.nombre}</h4>
+                <p className="hide-popup-sub">
+                  {r.descripcion || r.ciudad || 'Ruta comunitaria'}
+                </p>
+                <div className="hide-popup-dist">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                  </svg>
+                  <span>
+                    <strong>{distLabel}</strong> de distancia
+                  </span>
+                </div>
+                <div className="hide-popup-actions">
+                  <button
+                    className="hide-popup-btn info"
+                    onClick={() => onHideClick && onHideClick(r)}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                      <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Info
+                  </button>
+                  <button
+                    className="hide-popup-btn ir"
+                    onClick={() => onIrDirecto && onIrDirecto(r)}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                      <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    Recorrer
                   </button>
                 </div>
               </div>

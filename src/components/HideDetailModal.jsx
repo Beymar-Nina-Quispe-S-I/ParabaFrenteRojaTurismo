@@ -7,7 +7,6 @@ export default function HideDetailModal({
   distanciaKm,
   onClose,
   onIr,
-  onCaminar,
 }) {
   const estado = ESTADOS_RUTA[estadoTramo] || ESTADOS_RUTA.ok
 
@@ -26,10 +25,6 @@ export default function HideDetailModal({
       : distanciaKm < 1
       ? `${Math.round(distanciaKm * 1000)} m`
       : `${distanciaKm.toFixed(1)} km`
-
-  // Tiempo estimado caminando (5 km/h → 12 min por km)
-  const minCaminando =
-    distanciaKm == null ? null : Math.max(1, Math.round(distanciaKm * 12))
 
   return (
     <div
@@ -72,7 +67,6 @@ export default function HideDetailModal({
             </p>
           </div>
 
-          {/* Stats */}
           <div className="hide-modal-stats">
             <div className="hide-modal-stat">
               <svg
@@ -129,25 +123,6 @@ export default function HideDetailModal({
                 </div>
               </div>
             )}
-
-            {minCaminando !== null && (
-              <div className="hide-modal-stat">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path d="M13 4a1 1 0 100-2 1 1 0 000 2zM9.5 8.5L7 21m6-17.5L10.5 12 13 13.5l1.5 6M7 10.5l2.5-2L12 9l2.5-1 2 2" />
-                </svg>
-                <div>
-                  <span className="hide-modal-stat-label">Caminando</span>
-                  <strong className="hide-modal-stat-value">
-                    ~{minCaminando} min
-                  </strong>
-                </div>
-              </div>
-            )}
           </div>
 
           {hide.dms && (
@@ -165,7 +140,7 @@ export default function HideDetailModal({
             </div>
           )}
 
-          {/* Botones de acción */}
+          {/* Botón único: Recorrer */}
           <div className="hide-modal-actions">
             <button className="hide-modal-btn ir" onClick={onIr}>
               <svg
@@ -176,19 +151,7 @@ export default function HideDetailModal({
               >
                 <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
               </svg>
-              Ir en vehículo
-            </button>
-
-            <button className="hide-modal-btn caminar" onClick={onCaminar}>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path d="M13 4a1 1 0 100-2 1 1 0 000 2zM9.5 8.5L7 21m6-17.5L10.5 12 13 13.5l1.5 6M7 10.5l2.5-2L12 9l2.5-1 2 2" />
-              </svg>
-              Ir caminando
+              Recorrer
             </button>
           </div>
         </div>

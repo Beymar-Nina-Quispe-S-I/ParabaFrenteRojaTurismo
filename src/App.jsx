@@ -7,6 +7,7 @@ import Modal from './components/Modal'
 import ProfileDrawer from './components/ProfileDrawer'
 import BottomNav from './components/BottomNav'
 import DesktopLayout from './components/DesktopLayout'
+import ExitConfirmModal from './components/ExitConfirmModal'
 
 import InicioView from './views/InicioView'
 import MapaView from './views/MapaView'
@@ -16,6 +17,8 @@ import RutasView from './views/RutasView'
 import { useToast } from './hooks/useToast'
 import { useAuth } from './hooks/useAuth'
 import { useMediaQuery } from './hooks/useMediaQuery'
+import { useBeforeUnload } from './hooks/useBeforeUnload'
+import { useBackGuard } from './hooks/useBackGuard'
 
 export default function App() {
   const [view, setView] = useState('inicio')
@@ -28,6 +31,9 @@ export default function App() {
 
   const { toast, msg, kind, show } = useToast()
   const { user, login, register, logout } = useAuth()
+
+  useBeforeUnload(true)
+  const { confirmOpen, requestCancel, requestConfirm } = useBackGuard(true)
 
   useEffect(() => {
     if (!navigator.geolocation) return
@@ -43,7 +49,12 @@ export default function App() {
   }, [])
 
   function openModal(k) {
-    if ((k === 'favoritos' || k === 'misAvistamientos' || k === 'registrarAvistamiento') && !user) {
+    if (
+      (k === 'favoritos' ||
+        k === 'misAvistamientos' ||
+        k === 'registrarAvistamiento') &&
+      !user
+    ) {
       setModal('login')
       return
     }
@@ -70,9 +81,15 @@ export default function App() {
         />
       )}
       {view === 'mapa' && <MapaView />}
-      {view === 'avistamientos' && <AvistamientosView onOpenModal={openModal} />}
+      {view === 'avistamientos' && (
+        <AvistamientosView onOpenModal={openModal} />
+      )}
       {view === 'rutas' && (
-        <RutasView userPosition={userPosition} onTrazar={onTrazar} />
+        <RutasView
+          userPosition={userPosition}
+          onTrazar={onTrazar}
+          onOpenModal={openModal}
+        />
       )}
     </>
   )
@@ -125,6 +142,12 @@ export default function App() {
         onToast={toast}
         onSpinner={setSpinner}
         onReload={reloadAvistamientos}
+      />
+
+      <ExitConfirmModal
+        open={confirmOpen}
+        onCancel={requestCancel}
+        onConfirm={requestConfirm}
       />
     </>
   )

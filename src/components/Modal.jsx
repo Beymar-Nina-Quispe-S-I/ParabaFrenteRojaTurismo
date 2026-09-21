@@ -97,7 +97,7 @@ export default function Modal({
     onSpinner(true)
     try {
       const u = await onLogin(loginU.trim(), loginP)
-      onToast(`Bienvenido, ${u.nombre}!`, 'success')
+      onToast(`Bienvenido, ${u.nombre || u.email}!`, 'success')
       onClose()
     } catch (e) {
       onToast(e.message || 'Error al iniciar sesión', 'error')
@@ -109,12 +109,11 @@ export default function Modal({
   async function submitRegister() {
     if (!regN || !regE || !regU || !regP)
       return onToast('Completa todos los campos', 'error')
-    if (regP.length < 6)
-      return onToast('Contraseña mín. 6 caracteres', 'error')
+    if (regP.length < 6) return onToast('Contraseña mín. 6 caracteres', 'error')
     onSpinner(true)
     try {
       await onRegister(regN.trim(), regE.trim(), regU.trim(), regP)
-      onToast('Cuenta creada! Ya puedes iniciar sesión', 'success')
+      onToast('Cuenta creada. Revisa tu correo o inicia sesión', 'success')
       onSwitch('login')
     } catch (e) {
       onToast(e.message || 'Error al registrar', 'error')
@@ -129,43 +128,47 @@ export default function Modal({
     if (!avFecha) return onToast('Selecciona una fecha', 'error')
 
     onSpinner(true)
-    const { error } = await sb.from('avistamientos').insert({
-      user_id: user.id,
-      especie: avEspecie,
-      cantidad: avCantidad,
-      lugar: avLugar || null,
-      ciudad: avCiudad || null,
-      descripcion: avDesc || null,
-      fecha_avistamiento: avFecha,
-    })
-
-    if (error) {
-      onSpinner(false)
-      return onToast('Error: ' + error.message, 'error')
-    }
-
-    if (ubicacionDetectada) {
-      await sb.from('ubicaciones').insert({
-        nombre: avLugar || avCiudad || `Avistamiento de ${avEspecie}`,
-        descripcion: avDesc || `Registrado por ${user.nombre || user.usuario}`,
-        latitud: ubicacionDetectada.lat,
-        longitud: ubicacionDetectada.lng,
-        direccion: avLugar || null,
-        ciudad: avCiudad || 'Bolivia',
-        pais: 'Bolivia',
-        tipo: 'avistamiento',
-        estado: 'activo',
+    try {
+      const { error } = await sb.from('avistamientos').insert({
+        user_id: user.id,
         especie: avEspecie,
-        cantidad_avistada: avCantidad,
+        cantidad: avCantidad,
+        lugar: avLugar || null,
+        ciudad: avCiudad || null,
+        descripcion: avDesc || null,
         fecha_avistamiento: avFecha,
-        activo: true,
       })
-    }
 
-    onSpinner(false)
-    onToast('Avistamiento registrado con éxito', 'success')
-    onReload()
-    onClose()
+      if (error) {
+        onToast('Error: ' + error.message, 'error')
+        return
+      }
+
+      if (ubicacionDetectada) {
+        await sb.from('ubicaciones').insert({
+          nombre: avLugar || avCiudad || `Avistamiento de ${avEspecie}`,
+          descripcion:
+            avDesc || `Registrado por ${user.nombre || user.email}`,
+          latitud: ubicacionDetectada.lat,
+          longitud: ubicacionDetectada.lng,
+          direccion: avLugar || null,
+          ciudad: avCiudad || 'Bolivia',
+          pais: 'Bolivia',
+          tipo: 'avistamiento',
+          estado: 'activo',
+          especie: avEspecie,
+          cantidad_avistada: avCantidad,
+          fecha_avistamiento: avFecha,
+          activo: true,
+        })
+      }
+
+      onToast('Avistamiento registrado con éxito', 'success')
+      onReload()
+      onClose()
+    } finally {
+      onSpinner(false)
+    }
   }
 
   if (!kind) return null
@@ -182,11 +185,13 @@ export default function Modal({
         {kind === 'login' && (
           <>
             <Header title="Iniciar Sesión" onClose={onClose} />
-            <label className="field-label">Usuario o correo</label>
+            <label className="field-label">Correo electrónico</label>
             <input
+              type="email"
               value={loginU}
               onChange={(e) => setLoginU(e.target.value)}
-              placeholder="usuario@correo.com"
+              placeholder="tu@correo.com"
+              autoComplete="email"
             />
             <label className="field-label">Contraseña</label>
             <input
@@ -194,6 +199,7 @@ export default function Modal({
               value={loginP}
               onChange={(e) => setLoginP(e.target.value)}
               placeholder="••••••••"
+              autoComplete="current-password"
             />
             <button className="btn-primary" onClick={submitLogin}>
               Ingresar
@@ -312,9 +318,7 @@ export default function Modal({
               misAvist.map((a) => (
                 <div key={a.id} className="mobile-avistamiento-item">
                   <div className="avistamiento-top">
-                    <strong style={{ color: 'var(--accent)' }}>
-                      {a.especie}
-                    </strong>
+                    <strong style={{ color: 'var(--accent)' }}>{a.especie}</strong>
                     <span className="avistamiento-date">
                       {new Date(
                         a.fecha_avistamiento || a.created_at
@@ -354,14 +358,7 @@ export default function Modal({
             </select>
 
             <button className="btn-secondary" onClick={usarUbicacion}>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                width={16}
-                height={16}
-              >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width={16} height={16}>
                 <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
