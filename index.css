@@ -1,0 +1,511 @@
+/* ==========================================================================
+   FICHA TÉCNICA DE AVES - Estilo original de D:\FichaTecnica-Paraba
+   Diseño de dos paneles limpio, natural y sin código complicado
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  background: #f3f5ef;
+  color: #20352b;
+}
+
+.coordinates-view {
+  min-height: 100vh;
+  background: #f3f5ef;
+  color: #20352b;
+  overflow-y: auto;
+}
+
+.coordinates-shell {
+  width: min(1040px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 60px;
+}
+
+.coordinates-header,
+.coordinates-panel-title,
+.coordinates-route-card-top,
+.coordinates-card-actions {
+  display: flex;
+  align-items: center;
+}
+
+.coordinates-header,
+.coordinates-panel-title {
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.coordinates-kicker {
+  color: #b2552d;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.coordinates-header h2 {
+  margin: 4px 0 4px;
+  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+  color: #193c2d;
+}
+
+.coordinates-header p,
+.coordinates-panel-title p {
+  margin: 0;
+  color: #68776e;
+  font-size: .9rem;
+}
+
+.coordinates-new-button,
+.coordinates-save-button,
+.coordinates-refresh-button,
+.coordinates-cancel-button,
+.coordinates-card-actions button {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.coordinates-new-button,
+.coordinates-save-button {
+  background: #24513d;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 700;
+  padding: 10px 16px;
+  transition: background 0.2s;
+}
+
+.coordinates-new-button:hover,
+.coordinates-save-button:hover {
+  background: #193c2d;
+}
+
+.coordinates-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(290px, 0.85fr);
+  gap: 20px;
+  margin-top: 22px;
+}
+
+.coordinates-form-panel,
+.coordinates-list-panel {
+  background: #fff;
+  border: 1px solid #dce5dc;
+  border-radius: 10px;
+  padding: 22px;
+  box-shadow: 0 8px 25px rgba(36, 81, 61, .06);
+}
+
+.coordinates-panel-title h3 {
+  margin: 0 0 4px;
+  color: #20352b;
+  font-size: 1.15rem;
+}
+
+.coordinates-cancel-button,
+.coordinates-refresh-button {
+  background: transparent;
+  color: #24513d;
+  padding: 4px 0;
+  font-size: .85rem;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* Formulario */
+.coordinates-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0 12px;
+}
+
+.coordinates-form-panel form > label,
+.coordinates-form-grid label {
+  display: grid;
+  gap: 5px;
+  color: #526359;
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+.form-label-bloque {
+  display: grid;
+  gap: 5px;
+  color: #526359;
+  font-size: .8rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.coordinates-form-panel input:not([type="checkbox"]),
+.coordinates-form-panel textarea,
+.form-select,
+.buscador-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #cad8cc;
+  border-radius: 6px;
+  background: #fbfdf9;
+  color: #20352b;
+  padding: 9px 11px;
+  font: inherit;
+  font-size: .86rem;
+}
+
+.coordinates-form-panel input:focus,
+.coordinates-form-panel textarea:focus,
+.form-select:focus,
+.buscador-input:focus {
+  outline: 2px solid rgba(36, 81, 61, .2);
+  border-color: #24513d;
+}
+
+.coordinates-form-panel textarea {
+  resize: vertical;
+}
+
+.coordinates-save-button {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.coordinates-message {
+  min-height: 18px;
+  margin: 8px 0;
+  font-size: .82rem;
+  font-weight: 700;
+}
+
+.coordinates-message.is-error { color: #a5362f; }
+.coordinates-message.is-success { color: #26734d; }
+
+/* Lista de Aves (Cards) */
+.coordinates-route-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+  max-height: 580px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.coordinates-route-card {
+  display: grid;
+  grid-template-columns: 6px minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid #dce5dc;
+  border-radius: 8px;
+  background: #fbfdf9;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.coordinates-route-card:hover {
+  background: #f4f8f4;
+  border-color: #cad8cc;
+}
+
+.coordinates-route-card.is-selected {
+  background: #edf5ed;
+  border-color: #24513d;
+  box-shadow: 0 0 0 1px #24513d;
+}
+
+.coordinates-route-color {
+  min-height: 100%;
+}
+
+.coordinates-route-card-content {
+  padding: 11px 13px;
+}
+
+.coordinates-route-card-top {
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.coordinates-route-card h4 {
+  margin: 0;
+  font-size: .95rem;
+  color: #20352b;
+}
+
+.badge-estado {
+  font-size: .7rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.badge-cr { background: #d32f2f; }
+.badge-en { background: #e65100; }
+.badge-vu { background: #f57f17; }
+.badge-lc { background: #24513d; }
+
+.subtitulo-cientifico {
+  display: block;
+  font-style: italic;
+  color: #68776e;
+  font-size: .78rem;
+  margin: 1px 0 4px;
+}
+
+.coordinates-route-card p {
+  margin: 6px 0;
+  color: #526359;
+  font-size: .8rem;
+  line-height: 1.4;
+}
+
+.meta-info {
+  color: #68776e;
+  font-size: .74rem;
+}
+
+.coordinates-card-actions {
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed #dce5dc;
+}
+
+.coordinates-card-actions button {
+  padding: 0;
+  background: transparent;
+  color: #24513d;
+  font-size: .76rem;
+  font-weight: 700;
+}
+
+.coordinates-card-actions button:hover {
+  text-decoration: underline;
+}
+
+.coordinates-card-actions button.danger {
+  color: #a5362f;
+}
+
+.coordinates-empty {
+  margin: 12px 0;
+  color: #78867d;
+  font-size: .85rem;
+}
+
+/* Vista Detallada de la Ficha Técnica (Panel Izquierdo) */
+.ficha-detalle-box {
+  display: grid;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.ficha-foto-tabla-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 14px;
+}
+
+.ficha-foto-caja {
+  border: 1px solid #dce5dc;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fbfdf9;
+  height: 165px;
+}
+
+.ficha-foto-caja img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tabla-datos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .84rem;
+}
+
+.tabla-datos th,
+.tabla-datos td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #edf2ed;
+  text-align: left;
+}
+
+.tabla-datos th {
+  color: #68776e;
+  width: 40%;
+  font-weight: 700;
+  background: rgba(36, 81, 61, 0.04);
+}
+
+.ficha-secciones-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.ficha-seccion-item {
+  background: #fbfdf9;
+  border: 1px solid #dce5dc;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.ficha-seccion-item h4 {
+  margin: 0 0 4px;
+  font-size: .85rem;
+  color: #24513d;
+}
+
+.ficha-seccion-item p {
+  margin: 0;
+  font-size: .83rem;
+  color: #334439;
+  line-height: 1.45;
+}
+
+.ficha-destacada {
+  background: #fdf5f2;
+  border-left: 4px solid #b2552d;
+}
+
+.ficha-destacada h4 {
+  color: #b2552d;
+}
+
+/* Sección de Mapa y Rutas */
+.panel-mapa-rutas {
+  margin-top: 24px;
+  background: #fff;
+  border: 1px solid #dce5dc;
+  border-radius: 10px;
+  padding: 22px;
+  box-shadow: 0 8px 25px rgba(36, 81, 61, .06);
+}
+
+.contenedor-imagen-mapa {
+  text-align: center;
+  margin: 14px 0;
+  background: #fbfdf9;
+  padding: 10px;
+  border: 1px solid #dce5dc;
+  border-radius: 8px;
+}
+
+.contenedor-imagen-mapa img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.rutas-resumen-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.ruta-item {
+  background: #fbfdf9;
+  border: 1px solid #dce5dc;
+  border-left-width: 4px;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.ruta-item h4 {
+  margin: 0 0 2px;
+  font-size: .9rem;
+  color: #20352b;
+}
+
+.ruta-etiqueta {
+  font-size: .72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.ruta-item p {
+  margin: 0;
+  font-size: .8rem;
+  color: #526359;
+  line-height: 1.4;
+}
+
+.lista-aves-ruta {
+  margin: 0;
+  padding-left: 16px;
+  font-size: .8rem;
+  color: #334439;
+  display: grid;
+  gap: 8px;
+}
+
+.lista-aves-ruta li {
+  line-height: 1.4;
+}
+
+.lista-aves-ruta em {
+  color: #b2552d;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.aviso-recomendaciones {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: #f3f5ef;
+  border-radius: 6px;
+  font-size: .82rem;
+  color: #526359;
+}
+
+/* Impresión */
+@media print {
+  body, .coordinates-view {
+    background: #fff;
+    color: #000;
+  }
+  .coordinates-header button,
+  .coordinates-list-panel,
+  .coordinates-cancel-button,
+  .panel-mapa-rutas {
+    display: none !important;
+  }
+  .coordinates-grid {
+    grid-template-columns: 1fr;
+  }
+  .coordinates-form-panel {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+}
+
+/* Responsivo */
+@media (max-width: 860px) {
+  .coordinates-grid {
+    grid-template-columns: 1fr;
+  }
+  .ficha-foto-tabla-grid {
+    grid-template-columns: 1fr;
+  }
+  .rutas-resumen-grid {
+    grid-template-columns: 1fr;
+  }
+  .coordinates-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
