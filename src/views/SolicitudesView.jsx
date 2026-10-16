@@ -35,7 +35,7 @@ export default function SolicitudesView({ onToast }) {
       return
     }
     try {
-      await rechazar(rechazando.tipo, rechazando.id, user.id, motivo.trim())
+      await rechazar(rechazando.tipo, rechazando, user.id, motivo.trim())
       onToast('Solicitud rechazada y notificada al usuario', 'info')
       setRechazando(null)
       setMotivo('')

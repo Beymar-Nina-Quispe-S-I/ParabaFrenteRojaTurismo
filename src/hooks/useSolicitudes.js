@@ -98,14 +98,9 @@ export function useSolicitudes() {
   )
 
   const rechazar = useCallback(
-    async (tipo, id, adminId, motivo) => {
+    async (tipo, solicitud, adminId, motivo) => {
       const tabla = tipo === 'avistamiento' ? 'avistamientos' : 'rutas'
-
-      const { data: registro } = await sb
-        .from(tabla)
-        .select('user_id, nombre, especie, lugar, ciudad, descripcion')
-        .eq('id', id)
-        .single()
+      const registro = solicitud
 
       if (!registro?.user_id) {
         throw new Error('No se encontró el dueño del registro')
@@ -120,7 +115,7 @@ export function useSolicitudes() {
           aprobado_en: new Date().toISOString(),
           motivo_rechazo: motivo,
         })
-        .eq('id', id)
+        .eq('id', registro.id)
 
       if (error) throw new Error(error.message)
 
@@ -128,7 +123,7 @@ export function useSolicitudes() {
         user_id: adminId,
         accion: 'rechazar',
         entidad: tipo,
-        entidad_id: id,
+        entidad_id: registro.id,
         detalles: { motivo, notificado_a: registro.user_id },
         user_agent: navigator.userAgent,
       })
@@ -146,7 +141,7 @@ export function useSolicitudes() {
         mensaje,
         tipo: 'error',
         entidad: tipo,
-        entidad_id: id,
+        entidad_id: registro.id,
       })
 
       await cargar()
