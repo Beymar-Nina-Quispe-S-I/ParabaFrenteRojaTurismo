@@ -26,7 +26,7 @@ export async function getMessagingSafe() {
     return messaging
   } catch (err) {
     console.warn('Error inicializando Messaging:', err)
-    return null
+    throw err
   }
 }
 

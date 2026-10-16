@@ -15,17 +15,21 @@ export function usePushNotifications(user) {
     let unsub = null
 
     async function setupListener() {
-      const messaging = await getMessagingSafe()
-      if (!messaging) return
-      unsub = onMessage(messaging, (payload) => {
-        const { title, body } = payload.notification || {}
-        if (Notification.permission === 'granted') {
-          new Notification(title || 'Ecosvuelos', {
-            body: body || '',
-            icon: '/icons/icon-192x192.png',
-          })
-        }
-      })
+      try {
+        const messaging = await getMessagingSafe()
+        if (!messaging) return
+        unsub = onMessage(messaging, (payload) => {
+          const { title, body } = payload.notification || {}
+          if (Notification.permission === 'granted') {
+            new Notification(title || 'Ecosvuelos', {
+              body: body || '',
+              icon: '/icons/icon-192x192.png',
+            })
+          }
+        })
+      } catch (err) {
+        console.warn('No se pudo configurar el listener de notificaciones:', err)
+      }
     }
     setupListener()
 
@@ -59,14 +63,22 @@ export function usePushNotifications(user) {
       }
 
       // Registrar Service Worker
-      if ('serviceWorker' in navigator) {
-        await navigator.serviceWorker.register('/firebase-messaging-sw.js')
-        await navigator.serviceWorker.ready
+      if (!('serviceWorker' in navigator)) {
+        return {
+          ok: false,
+          error: 'Este navegador no permite Service Workers; las notificaciones requieren HTTPS.',
+        }
       }
+      await navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      await navigator.serviceWorker.ready
 
       const messaging = await getMessagingSafe()
       if (!messaging) {
-        return { ok: false, error: 'No se pudo inicializar Firebase' }
+        return {
+          ok: false,
+          error:
+            'Firebase Messaging no es compatible con este navegador o entorno. Usa una conexión HTTPS y permite almacenamiento del sitio.',
+        }
       }
 
       const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY
