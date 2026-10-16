@@ -1,0 +1,599 @@
+/* ==========================================================
+   PIN DE HIDE
+   ========================================================== */
+.hide-pin {
+    position: relative;
+    width: 46px;
+    height: 66px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hide-pin:hover {
+    transform: translateY(-3px) scale(1.06);
+}
+
+.hide-pin-head {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #ffffff;
+    box-shadow: 0 6px 16px rgba(27, 27, 47, 0.28), 0 0 0 2px rgba(255, 255, 255, 0.6);
+    position: relative;
+    z-index: 2;
+}
+
+.hide-pin-head svg {
+    width: 20px;
+    height: 20px;
+}
+
+.hide-pin-tip {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 12px solid #22c55e;
+    margin-top: -3px;
+    filter: drop-shadow(0 3px 4px rgba(27, 27, 47, 0.3));
+    z-index: 1;
+}
+
+.hide-pin-label {
+    position: absolute;
+    bottom: -2px;
+    background: #1b1b2f;
+    color: #fff;
+    font-family: 'Sora', sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(27, 27, 47, 0.3);
+    letter-spacing: 0.2px;
+    transform: translateY(50%);
+}
+
+/* ==========================================================
+   PIN DE RUTA COMUNITARIA
+   ========================================================== */
+.ruta-pin {
+    position: relative;
+    width: 50px;
+    height: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ruta-pin:hover {
+    transform: translateY(-3px) scale(1.06);
+}
+
+.ruta-pin-head {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #326e7a, #2a5b66);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #ffffff;
+    box-shadow: 0 6px 16px rgba(27, 27, 47, 0.28), 0 0 0 2px rgba(50, 110, 122, 0.4);
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+}
+
+.ruta-pin-foto {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+}
+
+.ruta-pin-icon {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ruta-pin-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.ruta-pin-tip {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 12px solid #326e7a;
+    margin-top: -3px;
+    filter: drop-shadow(0 3px 4px rgba(27, 27, 47, 0.3));
+    z-index: 1;
+}
+
+.ruta-pin-label {
+    position: absolute;
+    bottom: -2px;
+    background: #326e7a;
+    color: #fff;
+    font-family: 'Sora', sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 4px 10px rgba(50, 110, 122, 0.4);
+    letter-spacing: 0.2px;
+    transform: translateY(50%);
+}
+
+/* ==========================================================
+   POPUP CHIQUITO DEL HIDE
+   ========================================================== */
+.hide-popup-mini .leaflet-popup-content-wrapper {
+    border-radius: 16px !important;
+    box-shadow: 0 12px 32px rgba(27, 27, 47, 0.22) !important;
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.hide-popup-mini .leaflet-popup-content {
+    margin: 0 !important;
+    font-family: 'Inter', sans-serif;
+    min-width: 200px;
+}
+
+.hide-popup-mini .leaflet-popup-tip {
+    box-shadow: 0 4px 8px rgba(27, 27, 47, 0.15);
+}
+
+.hide-popup-body {
+    padding: 14px 16px 12px;
+}
+
+.hide-popup-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #1b1b2f;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+}
+
+.hide-popup-sub {
+    font-size: 0.75rem;
+    color: #8f8da6;
+    margin: 0 0 10px;
+    line-height: 1.35;
+}
+
+.hide-popup-dist {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    background: #f4f3ef;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    color: #4a4a63;
+    margin-bottom: 10px;
+}
+
+.hide-popup-dist svg {
+    width: 14px;
+    height: 14px;
+    color: #d6483f;
+    flex-shrink: 0;
+}
+
+.hide-popup-dist strong {
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    color: #1b1b2f;
+    font-size: 0.82rem;
+}
+
+.hide-popup-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.hide-popup-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 9px 10px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.76rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease;
+}
+
+.hide-popup-btn svg {
+    width: 13px;
+    height: 13px;
+}
+
+.hide-popup-btn.info {
+    background: #f4f3ef;
+    color: #1b1b2f;
+}
+
+.hide-popup-btn.info:hover {
+    background: #ebe9e2;
+}
+
+.hide-popup-btn.ir {
+    background: linear-gradient(135deg, #d6483f, #b23830);
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(214, 72, 63, 0.32);
+}
+
+.hide-popup-btn.ir:hover {
+    box-shadow: 0 6px 14px rgba(214, 72, 63, 0.45);
+}
+
+.hide-popup-btn:active {
+    transform: scale(0.95);
+}
+
+.hide-popup-mini .leaflet-popup-close-button {
+    color: #8f8da6 !important;
+    font-size: 20px !important;
+    padding: 6px 8px 0 0 !important;
+    transition: color 0.2s;
+}
+
+.hide-popup-mini .leaflet-popup-close-button:hover {
+    color: #d6483f !important;
+}
+
+.hide-popup-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    background: rgba(50, 110, 122, 0.12);
+    color: #326e7a;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 800;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 6px;
+}
+
+/* ==========================================================
+   MODAL DE HIDE
+   ========================================================== */
+.hide-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(27, 27, 47, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    animation: hideModalFadeIn 0.25s ease-out;
+}
+
+@keyframes hideModalFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.hide-modal {
+    background: #ffffff;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 92vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 30px 60px rgba(27, 27, 47, 0.35);
+    animation: hideModalPopIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes hideModalPopIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.hide-modal-photo {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    background-size: cover;
+    background-position: center;
+    background-color: #1b1b2f;
+    flex-shrink: 0;
+}
+
+.hide-modal-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(27, 27, 47, 0.55) 0%, rgba(27, 27, 47, 0.05) 40%, transparent 100%);
+    pointer-events: none;
+}
+
+.hide-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    border: none;
+    color: #1b1b2f;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hide-modal-close:active {
+    transform: scale(0.94);
+}
+
+.hide-modal-close svg {
+    width: 18px;
+    height: 18px;
+}
+
+.hide-modal-estado {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    background: rgba(255, 255, 255, 0.96);
+    color: #1b1b2f;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+    z-index: 3;
+}
+
+.hide-modal-estado-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+}
+
+.hide-modal-estado.estado-barro .hide-modal-estado-dot {
+    background: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+}
+
+.hide-modal-estado.estado-bloqueado .hide-modal-estado-dot {
+    background: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+}
+
+.hide-modal-body {
+    padding: 20px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+}
+
+.hide-modal-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #1b1b2f;
+    margin: 0 0 4px;
+    letter-spacing: -0.015em;
+}
+
+.hide-modal-sub {
+    font-size: 0.85rem;
+    color: #6b6a66;
+    margin: 0;
+    line-height: 1.45;
+}
+
+.hide-modal-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.hide-modal-stat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #f9f8f6;
+    border-radius: 14px;
+    border: 1px solid #f1efe9;
+}
+
+.hide-modal-stat svg {
+    width: 22px;
+    height: 22px;
+    color: #d6483f;
+    flex-shrink: 0;
+}
+
+.hide-modal-stat-label {
+    display: block;
+    font-size: 0.68rem;
+    color: #8f8da6;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 2px;
+}
+
+.hide-modal-stat-value {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #1b1b2f;
+    display: block;
+}
+
+.hide-modal-coords {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 14px;
+    background: #eff6f7;
+    border: 1px solid #d7e6e8;
+    border-radius: 12px;
+    color: #326e7a;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.hide-modal-coords svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.hide-modal-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.hide-modal-btn {
+    width: 100%;
+    padding: 14px 16px;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.hide-modal-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.hide-modal-btn.ir {
+    background: linear-gradient(135deg, #d6483f, #b23830);
+    color: #ffffff;
+    box-shadow: 0 10px 24px rgba(214, 72, 63, 0.32);
+}
+
+.hide-modal-btn.ir:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px rgba(214, 72, 63, 0.42);
+}
+
+.hide-modal-btn.ruta {
+    background: linear-gradient(135deg, #326e7a, #2a5b66);
+    box-shadow: 0 10px 24px rgba(50, 110, 122, 0.32);
+}
+
+.hide-modal-btn.ruta:hover {
+    background: linear-gradient(135deg, #2a5b66, #224b54);
+    box-shadow: 0 14px 30px rgba(50, 110, 122, 0.42);
+}
+
+.hide-modal-btn.caminar {
+    background: #eef4f5;
+    color: #326e7a;
+    border: 1.5px solid #d7e6e8;
+    box-shadow: 0 6px 14px rgba(50, 110, 122, 0.12);
+}
+
+.hide-modal-btn.caminar:hover {
+    background: #e0edee;
+    transform: translateY(-1px);
+}
+
+.hide-modal-btn:active {
+    transform: scale(0.97);
+}
+
+.hide-modal.es-ruta .hide-modal-estado {
+    background: rgba(50, 110, 122, 0.96);
+    color: #fff;
+}
+
+.hide-modal-estado.estado-ruta .hide-modal-estado-dot {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
+}
+
+@media (max-width: 400px) {
+    .hide-modal-photo {
+        height: 180px;
+    }
+
+    .hide-modal-title {
+        font-size: 1.1rem;
+    }
+
+    .hide-modal-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .hide-modal-actions {
+        grid-template-columns: 1fr;
+    }
+}

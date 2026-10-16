@@ -1,0 +1,798 @@
+/* ==========================================================
+   FICHA TÉCNICA DE AVES
+   ========================================================== */
+.ficha-top-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 16px 16px;
+}
+
+.ficha-export-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #d6483f, #b23830);
+    color: #fff;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(214, 72, 63, 0.28);
+    transition: transform 0.15s, box-shadow 0.2s;
+}
+
+.ficha-export-all:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(214, 72, 63, 0.38);
+}
+
+.ficha-export-all:active {
+    transform: scale(0.97);
+}
+
+.ficha-export-all svg {
+    width: 16px;
+    height: 16px;
+}
+
+.ficha-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 16px 24px;
+}
+
+/* ==========================================================
+   CARD DE FICHA
+   ========================================================== */
+.ficha-card {
+    background: #ffffff;
+    border: 1px solid #ece9e2;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(27, 27, 47, 0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ficha-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(27, 27, 47, 0.12);
+}
+
+.ficha-card-header {
+    position: relative;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+}
+
+.ficha-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top,
+            rgba(27, 27, 47, 0.92) 0%,
+            rgba(27, 27, 47, 0.35) 50%,
+            rgba(27, 27, 47, 0.1) 100%);
+}
+
+.ficha-card-header-content {
+    position: relative;
+    z-index: 1;
+    padding: 20px 22px;
+    color: #fff;
+    width: 100%;
+}
+
+.ficha-card-eyebrow {
+    display: inline-block;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: #ffb3ae;
+    margin-bottom: 6px;
+}
+
+.ficha-card-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    line-height: 1.1;
+}
+
+.ficha-card-estado {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    font-family: 'Sora', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+/* Cuerpo */
+.ficha-card-body {
+    padding: 20px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ficha-card-desc {
+    font-size: 0.85rem;
+    color: #4a4a63;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.ficha-card-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1.5px solid #e7e5de;
+    background: #fbfaf8;
+    color: #1b1b2f;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.ficha-card-toggle:hover {
+    background: #f4f3ef;
+    border-color: #d8d6cc;
+}
+
+.ficha-card-toggle svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Detalles expandidos */
+.ficha-card-detalles {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    animation: fichaExpand 0.3s ease-out;
+}
+
+@keyframes fichaExpand {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ficha-seccion {
+    padding: 14px 16px;
+    background: #fbfaf8;
+    border-radius: 14px;
+    border: 1px solid #f1efe9;
+}
+
+.ficha-seccion-titulo {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #d6483f;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 10px;
+}
+
+.ficha-seccion-contenido {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ficha-fila {
+    display: flex;
+    gap: 10px;
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+.ficha-fila-label {
+    flex-shrink: 0;
+    width: 130px;
+    color: #8f8da6;
+    font-weight: 700;
+}
+
+.ficha-fila-valor {
+    flex: 1;
+    color: #1b1b2f;
+    font-weight: 600;
+}
+
+/* Listas */
+.ficha-lista {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ficha-lista li {
+    font-size: 0.82rem;
+    color: #1b1b2f;
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.4;
+}
+
+.ficha-lista li::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #c0392b;
+}
+
+.ficha-lista-curiosidades li::before {
+    background: #5c8264;
+}
+
+/* Acciones */
+.ficha-card-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.ficha-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+}
+
+.ficha-btn svg {
+    width: 15px;
+    height: 15px;
+}
+
+.ficha-btn.pdf {
+    background: linear-gradient(135deg, #c0392b, #a5341f);
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(192, 57, 43, 0.28);
+}
+
+.ficha-btn.pdf:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(192, 57, 43, 0.38);
+}
+
+.ficha-btn.excel {
+    background: linear-gradient(135deg, #5c8264, #4a6b52);
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(92, 130, 100, 0.28);
+}
+
+.ficha-btn.excel:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(92, 130, 100, 0.38);
+}
+
+.ficha-btn:active {
+    transform: scale(0.97);
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .ficha-top-actions {
+        padding: 0 0 20px;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .ficha-top-actions .roles-buscar {
+        flex: 1;
+        margin-bottom: 0;
+    }
+
+    .ficha-export-all {
+        flex-shrink: 0;
+        width: auto;
+    }
+
+    .ficha-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        padding: 0 0 32px;
+    }
+}
+
+@media (min-width: 1440px) {
+    .ficha-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ==========================================================
+   GESTIÓN DE FICHAS (botones admin)
+   ========================================================== */
+.ficha-card {
+    position: relative;
+}
+
+.ficha-card.inactiva {
+    opacity: 0.65;
+}
+
+.ficha-card.inactiva:hover {
+    opacity: 0.85;
+}
+
+.ficha-card-badge-inactiva {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    background: #c0392b;
+    color: #fff;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.ficha-card-gestor {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.ficha-gestor-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.ficha-gestor-btn svg {
+    width: 13px;
+    height: 13px;
+}
+
+.ficha-gestor-btn.editar {
+    background: #eff6f7;
+    color: #326e7a;
+}
+
+.ficha-gestor-btn.editar:hover {
+    background: #d7e6e8;
+}
+
+.ficha-gestor-btn.desactivar {
+    background: #fbf3e7;
+    color: #c6862e;
+}
+
+.ficha-gestor-btn.desactivar:hover {
+    background: #f5e6cf;
+}
+
+.ficha-gestor-btn.activar {
+    background: #f2f8f3;
+    color: #5c8264;
+}
+
+.ficha-gestor-btn.activar:hover {
+    background: #d7eadb;
+}
+
+.ficha-gestor-btn.eliminar {
+    flex: 0 0 auto;
+    padding: 8px 10px;
+    background: #fdf2f1;
+    color: #c0392b;
+}
+
+.ficha-gestor-btn.eliminar:hover {
+    background: #fbe5e3;
+}
+
+.ficha-gestor-btn:active {
+    transform: scale(0.95);
+}
+
+/* Botones de la barra superior */
+.ficha-top-btns {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ficha-export-all.secondary {
+    background: #f4f3ef;
+    color: #1b1b2f;
+    box-shadow: 0 3px 8px rgba(27, 27, 47, 0.08);
+}
+
+.ficha-export-all.secondary:hover {
+    background: #ebe9e2;
+    box-shadow: 0 6px 14px rgba(27, 27, 47, 0.12);
+}
+
+/* ==========================================================
+   FORM MODAL DE FICHA
+   ========================================================== */
+.ficha-form-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(27, 27, 47, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.ficha-form-modal {
+    background: #ffffff;
+    border-radius: 22px;
+    width: 100%;
+    max-width: 620px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 30px 60px rgba(27, 27, 47, 0.35);
+    animation: fichaFormIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
+}
+
+@keyframes fichaFormIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.ficha-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    border-bottom: 1px solid #ece9e2;
+    flex-shrink: 0;
+}
+
+.ficha-form-header h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #1b1b2f;
+    margin: 0;
+}
+
+.ficha-form-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f4f3ef;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.ficha-form-close:hover {
+    background: #ebe9e2;
+}
+
+.ficha-form-close svg {
+    width: 16px;
+    height: 16px;
+    color: #4a4a63;
+}
+
+.ficha-form-body {
+    padding: 20px 22px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    flex: 1;
+}
+
+.ficha-form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ficha-form-section h4 {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #d6483f;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f1efe9;
+}
+
+.ficha-form-section-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ficha-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.ficha-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ficha-form-field label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #6b6a66;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.ficha-form-field input,
+.ficha-form-field textarea,
+.ficha-form-field select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #e7e5de;
+    border-radius: 10px;
+    background: #fbfaf8;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.ficha-form-field input:focus,
+.ficha-form-field textarea:focus,
+.ficha-form-field select:focus {
+    outline: none;
+    border-color: #d6483f;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(214, 72, 63, 0.1);
+}
+
+.ficha-form-field textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+/* Tags de amenazas/curiosidades */
+.ficha-tag-input {
+    display: flex;
+    gap: 6px;
+}
+
+.ficha-tag-input input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1.5px solid #e7e5de;
+    border-radius: 10px;
+    background: #fbfaf8;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+}
+
+.ficha-tag-input input:focus {
+    outline: none;
+    border-color: #d6483f;
+    background: #fff;
+}
+
+.ficha-tag-input button {
+    width: 44px;
+    border: none;
+    background: #d6483f;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ficha-tag-input button:hover {
+    background: #b23830;
+}
+
+.ficha-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.ficha-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #f4f3ef;
+    color: #1b1b2f;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.ficha-tag button {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: none;
+    background: #d8d6cc;
+    color: #4a4a63;
+    font-size: 0.7rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ficha-tag button:hover {
+    background: #c0392b;
+    color: #fff;
+}
+
+/* Toggle activo */
+.ficha-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #fbfaf8;
+    border: 1px solid #f1efe9;
+    cursor: pointer;
+    font-weight: 600;
+    color: #1b1b2f;
+    font-size: 0.85rem;
+}
+
+.ficha-toggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: #d6483f;
+    cursor: pointer;
+}
+
+.ficha-form-error {
+    padding: 10px 14px;
+    background: #fdf2f1;
+    border-left: 4px solid #c0392b;
+    color: #c0392b;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.ficha-form-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-top: 8px;
+    border-top: 1px solid #f1efe9;
+    margin-top: 8px;
+    padding-top: 16px;
+}
+
+.ficha-form-actions button {
+    padding: 11px 18px;
+    border-radius: 10px;
+    border: none;
+    background: #f4f3ef;
+    color: #1b1b2f;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ficha-form-actions button:hover {
+    background: #ebe9e2;
+}
+
+.ficha-form-actions button.primary {
+    background: linear-gradient(135deg, #d6483f, #b23830);
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(214, 72, 63, 0.28);
+}
+
+.ficha-form-actions button.primary:hover:not(:disabled) {
+    box-shadow: 0 8px 18px rgba(214, 72, 63, 0.38);
+}
+
+.ficha-form-actions button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .ficha-top-btns {
+        flex-shrink: 0;
+    }
+
+    .ficha-top-actions {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .ficha-form-row {
+        grid-template-columns: 1fr;
+    }
+}

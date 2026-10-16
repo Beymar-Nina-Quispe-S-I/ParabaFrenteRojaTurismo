@@ -1,0 +1,20 @@
+/* ==========================================================
+   App.css — solo imports
+   El CSS real vive en src/styles/*.css
+   ========================================================== */
+@import './styles/base.css';
+@import './styles/ui.css';
+@import './styles/mobile-shell.css';
+@import './styles/bottom-nav.css';
+@import './styles/cards.css';
+@import './styles/inicio.css';
+@import './styles/mapa.css';
+@import './styles/hides.css';
+@import './styles/rutas.css';
+@import './styles/desktop.css';
+@import './styles/misc.css';
+@import './styles/roles.css';
+@import './styles/auditoria.css';
+@import './styles/historial.css';
+@import './styles/dashboard.css';
+@import './styles/ficha.css';

@@ -1,0 +1,268 @@
+/* ==========================================================
+   AUDITORÍA — header con contador de activos
+   ========================================================== */
+.auditoria-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.auditoria-top h3 {
+    margin: 0;
+}
+
+.auditoria-activos {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #f2f8f3;
+    color: #5c8264;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.activos-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.22);
+    animation: activosPulse 2s ease-in-out infinite;
+}
+
+@keyframes activosPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+/* Punto activo/inactivo en cada item */
+.auditoria-icon {
+    position: relative;
+}
+
+.auditoria-punto {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    z-index: 2;
+}
+
+.auditoria-punto.activo {
+    background: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.28);
+    animation: puntoActivoPulse 2s ease-in-out infinite;
+}
+
+.auditoria-punto.inactivo {
+    background: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.22);
+}
+
+@keyframes puntoActivoPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.85;
+    }
+}
+
+/* ==========================================================
+   USUARIOS EN LÍNEA
+   ========================================================== */
+.online-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.online-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #1b1b2f;
+}
+
+.online-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.22);
+    animation: activosPulse 2s ease-in-out infinite;
+}
+
+.online-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: #f2f8f3;
+    color: #5c8264;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.online-empty {
+    padding: 20px;
+    text-align: center;
+    color: #8f8da6;
+    font-size: 0.82rem;
+}
+
+.online-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.online-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #f2f8f3;
+    border: 1px solid #cfe6d3;
+    border-radius: 12px;
+}
+
+.online-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #5c8264, #4a6b52);
+    color: #fff;
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(92, 130, 100, 0.28);
+}
+
+.online-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.online-info strong {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.84rem;
+    font-weight: 800;
+    color: #1b1b2f;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.online-info span {
+    font-size: 0.7rem;
+    color: #5c8264;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.online-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.28);
+    animation: activosPulse 2s ease-in-out infinite;
+}
+
+/* Actualización viva del listado */
+.online-item {
+    animation: onlineItemIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes onlineItemIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.online-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 24px 20px;
+}
+
+.online-empty svg {
+    width: 32px;
+    height: 32px;
+    color: #d8d6cc;
+}
+
+.online-empty p {
+    margin: 0;
+    font-size: 0.82rem;
+}
+
+.online-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 24px 20px;
+    text-align: center;
+}
+
+.online-empty svg {
+    width: 32px;
+    height: 32px;
+    color: #d8d6cc;
+}
+
+.online-empty p {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #8f8da6;
+}
