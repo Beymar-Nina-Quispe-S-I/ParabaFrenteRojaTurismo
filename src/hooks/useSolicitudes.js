@@ -135,7 +135,7 @@ export function useSolicitudes() {
         lugar ? ` en ${lugar}` : ''
       } fue rechazado. Motivo: ${motivo}`
 
-      await sb.from('notificaciones').insert({
+      const { error: errorNotificacion } = await sb.from('notificaciones').insert({
         user_id: registro.user_id,
         titulo: `Rechazado: ${tituloRegistro}`,
         mensaje,
@@ -143,6 +143,11 @@ export function useSolicitudes() {
         entidad: tipo,
         entidad_id: registro.id,
       })
+      if (errorNotificacion) {
+        throw new Error(
+          `Se rechazó el registro, pero no se pudo guardar la notificación: ${errorNotificacion.message}`
+        )
+      }
 
       await cargar()
     },
